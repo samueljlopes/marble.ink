@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
 import paper from 'paper'
 import './App.css';
-import InkCanvas from './core/ink'
+import InkCanvas from './components/ink.js'
 
 class App extends Component {
   componentDidMount() 
   {
-    paper.setup('canvas')
-    //This sets up the canvas which will then be drawn on
   } 
 
   render() {
     return (
       <div>
-        <canvas id="canvas" resize="true"></canvas>
-        <InkCanvas/>
+        <InkCanvas expansionRate="1"></InkCanvas>
       </div>
     ); //The canvas is returned as a DOM element
   }
