@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import paper from 'paper'
 import './App.css';
 import InkCanvas from './components/ink.js'
 
