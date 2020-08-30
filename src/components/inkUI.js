@@ -1,39 +1,52 @@
-import paper,{ Point, Path, Circle, Group, Segment } from 'paper'
+import paper, { Point, Path, Circle, Group, Segment } from 'paper'
 import React from 'react';
 
 class InkUI extends React.Component {
+
+    state = { allTransformations: [] }
+    componentDidMount() {
+        setInterval(() => this.blotPhysics(this.props.allItems, this.props.isMouseDown), 10);
+    }
+
     render() {
         return (
-            <button className="InkUI" onClick={() => this.blotPhysics(this.props.allItems)}>
+            <button className="InkUI" onClick={() => this.blotPhysics(this.props.allItems, true)}>
                 {"Run Physics Simulation"}
             </button>
         );
     }
 
-    blotPhysics(allItems) {
+    blotPhysics(allItems, isMouseDown) {
         //Ink blot physics
-        console.log(allItems)
-        if (allItems.children.length > 1) {
-            var allInkBlots = allItems.children;
-            var allTransformations = [];
+        if (isMouseDown) {
+            if (this.state.allTransformations.length > 0) {
+                this.state.allTransformations.forEach(function (entry) {
+                    entry.remove();
+                });
+            }
 
-            for (let i = 1; i < allInkBlots.length; i++) {
-                let center = allInkBlots[i].position;
-                let radius = Math.sqrt(allInkBlots[i].area / Math.PI);
-                for (let j = i - 1; j >= 0; j--) {
-                    console.log("blot " + i + " acting on blot " + j);
-                    var transformation;
-                    if (allTransformations[j] == undefined) {
-                        transformation = this.radialDisplacement(allInkBlots[j], center, radius);
-                    } else {
-                        console.log("using previous transformations")
-                        transformation = this.radialDisplacement(allTransformations[j], center, radius)
-                        allTransformations[j].remove();
+            if (allItems.children.length > 1) {
+                var allInkBlots = allItems.children;
+                for (let i = 1; i < allInkBlots.length; i++) {
+                    let center = allInkBlots[i].position;
+                    let radius = Math.sqrt(Math.sqrt(allInkBlots[i].area / Math.PI));
+                    for (let j = i - 1; j >= 0; j--) {
+                        var transformation;
+                        if (this.state.allTransformations[j] == undefined) {
+                            transformation = this.radialDisplacement(allInkBlots[j], center, radius);
+                        } else {
+                            transformation = this.radialDisplacement(this.state.allTransformations[j], center, radius);
+                            this.state.allTransformations[j].remove();
+                        }
+                        transformation.fillColor = 'black';
+                        this.state.allTransformations[j] = (transformation);
                     }
-
-                    transformation.selected = true; 
-                    allTransformations[j] = (transformation);
-                } 
+                }
+                for (let i = 0; i < allItems.children.length; i++) {
+                    if (this.state.allTransformations[i] != undefined) {
+                        allItems.children[i].visible = false;
+                    }
+                }
             }
         }
     }
