@@ -28,10 +28,12 @@ class InkUI extends React.Component {
                     } else {
                         console.log("using previous transformations")
                         transformation = this.radialDisplacement(allTransformations[j], center, radius)
+                        allTransformations[j].remove();
                     }
-                    transformation.selected = true;
+
+                    transformation.selected = true; 
                     allTransformations[j] = (transformation);
-                }
+                } 
             }
         }
     }
