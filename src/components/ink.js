@@ -61,52 +61,39 @@ class InkCanvas extends React.Component {
       this.state.allItems.children[length - 1] = currentBlot;
     }
 
-    if (this.state.allItems.children.length == 3) {
-      var raster = this.state.allItems.children[0].rasterize();
-      // Hide the raster:
-      this.state.allItems.children[0].visible = false;
-      raster.visible = false;
+    if (this.state.allItems.children.length == 3 && this.state.testDisplacement == true) {
+      let radius = Math.sqrt(this.state.allItems.children[1].area / Math.PI)
+      let innerSegments = this.getInnerPoints(this.state.allItems.children[0], 0.99, null);
+      console.log(innerSegments);
 
-      //var quantiseCoeffecient = 2
-      var quantiseFactor = 25 //quantiseFactor * this.state.allItems.children[0].area ;
-      raster.on('load', function () {
-        raster.size = new paper.Size(raster.width / quantiseFactor, raster.height / quantiseFactor);
-        for (var y = 0; y < raster.height; y++) {
-          for (var x = 0; x < raster.width; x++) {
-            // Get the color of the pixel:
-            var color = raster.getPixel(x, y);
-            if (color.alpha == 1) {
-              var pathCenter = new Point(((x / raster.width) * raster.bounds.width * quantiseFactor) + (raster.position.x - ((raster.bounds.width / 2) * quantiseFactor)),
-                ((y / raster.height) * raster.bounds.height * quantiseFactor) + (raster.position.y - ((raster.bounds.height / 2) * quantiseFactor)));
-              // Create a circle shaped path:
-              var path = new Path.Circle({
-                center: pathCenter,
-                radius: 4
-              });
-              console.log("center: " + pathCenter);
-              path.fillColor = color;
-              path.selected = true;
-            }
-          }
-        }
-      });
-    }
-  }
-
-  radialDisplacement() {
-    let radius = Math.sqrt(this.state.allItems.children[1].area / Math.PI)
-    for (let i = 0; i < this.state.allItems.children[0].segments.length; i++) {
-      this.state.allItems.children[0].segments[i].point =
-        this.radialDisplacementFormula(this.state.allItems.children[0].segments[i].point, this.state.allItems.children[1].position, radius);
-      //Toy example: checking to see whether anchor point can be altered
+      for (let i = 0; i < this.state.allItems.children[0].segments.length; i++) {
+        this.state.allItems.children[0].segments[i].point =
+          this.radialDisplacementFormula(this.state.allItems.children[0].segments[i].point, this.state.allItems.children[1].position, radius);
+        //An odd shape is achieved when the formula is applied. 
+      }
       this.setState({ testDisplacement: false });
     }
   }
 
+  getInnerPoints(givenObject, scale, existingPoints) {
+    if (existingPoints == null) { existingPoints = [] }
+    else { givenObject.remove(); }
+
+    var scaledObject = givenObject.clone()
+    scaledObject.scale(scale);
+    if ((scaledObject.bounds.height * scaledObject.bounds.width) < 1) {
+      return (existingPoints);
+    }
+    else {
+      existingPoints.push(...scaledObject.segments);
+      return this.getInnerPoints(scaledObject, scale - 0.01, existingPoints);
+    }
+  }
+
   radialDisplacementFormula(point, center, radius) {
-    console.log(point + " " + center + " " + radius);
-    var pointPrimeX = center.x + ((point.x - center.x) * Math.sqrt(1 + (radius * radius / Math.pow(Math.abs(point.x - center.x), 2))));
-    var pointPrimeY = center.y + ((point.y - center.y) * Math.sqrt(1 + (radius * radius / Math.pow(Math.abs(point.y - center.y), 2))));
+    //console.log(point + " " + center + " " + radius);
+    var pointPrimeX = center.x + ((point.x - center.x) * Math.sqrt(1 + (Math.pow(radius, 2) / Math.pow(Math.abs(point.x - center.x), 2))));
+    var pointPrimeY = center.y + ((point.y - center.y) * Math.sqrt(1 + (Math.pow(radius, 2) / Math.pow(Math.abs(point.y - center.y), 2))));
     return (new Point(pointPrimeX, pointPrimeY));
   }
 
