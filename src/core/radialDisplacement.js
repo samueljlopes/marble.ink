@@ -1,21 +1,22 @@
 
 class RadialDisplacement {
     main() {
-        let allInkBlot = this.state.allItems;
-        for (var i = 0; i < allInkBlot.children.length; i++) {
-            for (var j = 0; j < allInkBlot.children.length; j++) {
-                if (i != j) {
-                    this.showIntersections(allInkBlot.children[i], allInkBlot.children[j]);
-                }
-            }
+    }
+    
+    getInnerPointsRecursive(givenObject, scale, existingPoints) {
+        if (existingPoints == null) { existingPoints = [] }
+        else { givenObject.remove(); }
+    
+        var scaledObject = givenObject.clone()
+        scaledObject.scale(scale);
+        if ((scaledObject.bounds.height * scaledObject.bounds.width) < 1) {
+          return (existingPoints);
         }
-    }
-
-    radialDisplacementFormula(point, center, radius) {
-        var pointPrime = center +
-            (point - center).dot(math.sqrt(1 + (math.pow(radius, 2) / math.abs(math.pow(point - center, 2)))));
-        return (pointPrime);
-    }
+        else {
+          existingPoints.push(...scaledObject.segments);
+          return this.getInnerPointsRecursive(scaledObject, scale - 0.01, existingPoints);
+        }
+      }
 
     getInnerPoints(givenObject) { //Only works if fillcolor is black
         var raster = givenObject.rasterize();
