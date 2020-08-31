@@ -1,7 +1,7 @@
 import paper, { Point, Path, Group} from 'paper';
 import React from 'react';
 import { create, all } from 'mathjs'
-import InkUI from './inkUI.js'
+import InkPhysics from './inkPhysics.js'
 
 const config = {}
 const math = create(all, config)
@@ -66,7 +66,7 @@ class InkCanvas extends React.Component {
     return (
       <div>
         <canvas id="canvas" width={window.innerWidth} height={window.innerHeight} resize></canvas>
-        <InkUI allItems={this.state.allItems} isMouseDown={this.state.isMouseDown} ></InkUI>
+        <InkPhysics allItems={this.state.allItems} isMouseDown={this.state.isMouseDown} ></InkPhysics>
       </div>
     ); //canvas is returned to the main program
   }

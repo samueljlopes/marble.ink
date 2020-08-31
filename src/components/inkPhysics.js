@@ -1,7 +1,7 @@
 import paper, { Point, Path, Circle, Group, Segment } from 'paper'
 import React from 'react';
 
-class InkUI extends React.Component {
+class InkPhysics extends React.Component {
 
     state = { allTransformations: [] }
     componentDidMount() {
@@ -10,9 +10,9 @@ class InkUI extends React.Component {
 
     render() {
         return (
-            {/* <button className="InkUI" onClick={() => this.blotPhysics(this.props.allItems, true)}>
+             <button className="InkPhysics" onClick={() => this.blotPhysics(this.props.allItems, true)}>
                 {"Run Physics Simulation"}
-            </button> */}
+            </button>
         );
     }
 
@@ -69,4 +69,4 @@ class InkUI extends React.Component {
         return (new Point(pointPrimeX, pointPrimeY));
     }
 }
-export default InkUI
+export default InkPhysics
