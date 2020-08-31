@@ -10,9 +10,9 @@ class InkUI extends React.Component {
 
     render() {
         return (
-            <button className="InkUI" onClick={() => this.blotPhysics(this.props.allItems, true)}>
+            {/* <button className="InkUI" onClick={() => this.blotPhysics(this.props.allItems, true)}>
                 {"Run Physics Simulation"}
-            </button>
+            </button> */}
         );
     }
 
@@ -24,16 +24,16 @@ class InkUI extends React.Component {
                     entry.remove();
                 });
             }
+            this.state.allTransformations = [];
 
             if (allItems.children.length > 1) {
-                var allInkBlots = allItems.children;
-                for (let i = 1; i < allInkBlots.length; i++) {
-                    let center = allInkBlots[i].position;
-                    let radius = Math.sqrt(Math.sqrt(allInkBlots[i].area / Math.PI));
+                for (let i = 1; i < allItems.children.length; i++) {
+                    let center = allItems.children[i].position;
+                    let radius = Math.sqrt(allItems.children[i].area / Math.PI);
                     for (let j = i - 1; j >= 0; j--) {
                         var transformation;
                         if (this.state.allTransformations[j] == undefined) {
-                            transformation = this.radialDisplacement(allInkBlots[j], center, radius);
+                            transformation = this.radialDisplacement(allItems.children[j], center, radius);
                         } else {
                             transformation = this.radialDisplacement(this.state.allTransformations[j], center, radius);
                             this.state.allTransformations[j].remove();

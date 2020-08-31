@@ -65,7 +65,7 @@ class InkCanvas extends React.Component {
   {
     return (
       <div>
-        <canvas id="canvas" width="1200" height="1000"></canvas>
+        <canvas id="canvas" width={window.innerWidth} height={window.innerHeight} resize></canvas>
         <InkUI allItems={this.state.allItems} isMouseDown={this.state.isMouseDown} ></InkUI>
       </div>
     ); //canvas is returned to the main program
