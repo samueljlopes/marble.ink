@@ -17,33 +17,33 @@ class InkUI extends React.Component {
     }
 
     blotPhysics(allItems, isMouseDown) {
-        //Ink blot physics
-        if (isMouseDown) {
+        //Ink blot physics. Shall be commented for posterity
+        if (isMouseDown) { //Only sims when mouse is down
             if (this.state.allTransformations.length > 0) {
                 this.state.allTransformations.forEach(function (entry) {
-                    entry.remove();
+                    entry.remove(); //Remove previous frame's transformations
                 });
             }
-            this.state.allTransformations = [];
+            this.state.allTransformations = []; //Clearing array
 
-            if (allItems.children.length > 1) {
-                for (let i = 1; i < allItems.children.length; i++) {
-                    let center = allItems.children[i].position;
-                    let radius = Math.sqrt(allItems.children[i].area / Math.PI);
-                    for (let j = i - 1; j >= 0; j--) {
-                        var transformation;
-                        if (this.state.allTransformations[j] == undefined) {
+            if (allItems.children.length > 1) { //Checks if there are two or more blots
+                for (let i = 1; i < allItems.children.length; i++) { //Goes forward throught the blots, first to last
+                    let center = allItems.children[i].position; //Gets center
+                    let radius = Math.sqrt(allItems.children[i].area / Math.PI); //Area is conserved so radius will always be the same
+                    for (let j = i - 1; j >= 0; j--) { //Goes backwards through the array - the last blot impacts all prevous blots
+                        var transformation; 
+                        if (this.state.allTransformations[j] == undefined) { //Checks for an existing transformation. If not, applies formula to circle
                             transformation = this.radialDisplacement(allItems.children[j], center, radius);
                         } else {
-                            transformation = this.radialDisplacement(this.state.allTransformations[j], center, radius);
-                            this.state.allTransformations[j].remove();
+                            transformation = this.radialDisplacement(this.state.allTransformations[j], center, radius); //Uses existing transformation
+                            this.state.allTransformations[j].remove(); //Removes previous from canvas
                         }
                         transformation.fillColor = 'black';
-                        this.state.allTransformations[j] = (transformation);
+                        this.state.allTransformations[j] = (transformation); //Places all blots' transformation into a array
                     }
                 }
                 for (let i = 0; i < allItems.children.length; i++) {
-                    if (this.state.allTransformations[i] != undefined) {
+                    if (this.state.allTransformations[i] != undefined) { //Checks whether to render the circle or the transformation
                         allItems.children[i].visible = false;
                     }
                 }
