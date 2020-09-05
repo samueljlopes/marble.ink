@@ -1,22 +1,34 @@
 import React, { Component } from 'react';
 import './App.css';
-import InkCanvas from './components/ink.js'
+import InkCanvas from './components/inkCanvas.js'
 import { Radio } from "antd";
+import 'antd/dist/antd.css';
+import paper from 'paper';
 
 class App extends Component {
-  state = { optionsDrawerValue: 0 }
+  state = { optionsDrawerValue: 0, 
+    allItems : paper.Group }
+  
+  componentDidMount() {
+    this.setState({ allItems: new paper.Group() })
+  }
 
   onChangeOptionsDrawerValue = (val) => {
     this.setState({ optionsDrawerValue: val.target.value })
   }
 
+  addItemToAllItems = (paperItem) => {
+    let currentAllItems = this.state.allItems;
+    currentAllItems.addChild(paperItem);
+    this.setState({ allItems: currentAllItems });
+  }
+
   render() {
-    console.log(this.state.optionsDrawerValue);
     return (
       <div>
         <OptionsDrawer value={this.state.optionsDrawerValue} onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
         <div>
-          <InkCanvas expansionRate="1"></InkCanvas>
+          <InkCanvas expansionRate={1} allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}></InkCanvas>
         </div>
       </div>
     );
@@ -34,16 +46,15 @@ class OptionsDrawer extends React.Component {
 
     return (
       <Radio.Group onChange={onChange} value={value}>
-        <Radio style={radioStyle} value={1}>
+        <Radio style={radioStyle} value={0}>
           Tine Lines
         </Radio>
-        <Radio style={radioStyle} value={2}>
+        <Radio style={radioStyle} value={1}>
           No Tine Lines
         </Radio>
       </Radio.Group>
     );
   }
 }
-
 
 export default App;

@@ -1,20 +1,16 @@
 import paper, { Point, Path, Group} from 'paper';
 import React from 'react';
-import { create, all } from 'mathjs'
 import InkPhysics from './inkPhysics.js'
-
-const config = {}
-const math = create(all, config)
 
 class InkCanvas extends React.Component {
   state = {
     isMouseDown: false,
-    allItems: paper.Group
   }
+
   //State is effectively a property outside the data flow, not an argument passed in
   constructor(props) {
     super(props);
-    this.expansionRate = parseInt(props.expansionRate, 10);
+    this.expansionRate = props.expansionRate;
   }
 
   componentDidMount() {
@@ -31,13 +27,6 @@ class InkCanvas extends React.Component {
 
   setupCanvas() {
     paper.setup('canvas');
-    this.setState({ allItems: new Group() })
-  }
-
-  addItemToAllItems(paperItem) {
-    let currentAllItems = this.state.allItems;
-    currentAllItems.addChild(paperItem);
-    this.setState({ allItems: currentAllItems });
   }
 
   frameUpdate() {
@@ -46,18 +35,18 @@ class InkCanvas extends React.Component {
       circle.flatten(0.0001); //This is a bit of a cheat. The number of anchor points on the circle primitive is 4, so the flatten command establishes more anchor points.
 
       this.setState({ isMouseDown: true });
-      this.addItemToAllItems(circle);
+      this.props.addItemToAllItems(circle);
     }
 
     paper.view.onMouseUp = (event) => {
       this.setState({ isMouseDown: false });
     }
 
-    if (this.state.isMouseDown && this.state.allItems.children.length > 0) {
-      let length = this.state.allItems.children.length;
-      let currentBlot = this.state.allItems.children[length - 1];
+    if (this.state.isMouseDown && this.props.allItems.children.length > 0) {
+      let length = this.props.allItems.children.length;
+      let currentBlot = this.props.allItems.children[length - 1];
       currentBlot.scale(0.01 + this.expansionRate);
-      this.state.allItems.children[length - 1] = currentBlot;
+      this.props.allItems.children[length - 1] = currentBlot;
     }
   }
 
@@ -66,7 +55,7 @@ class InkCanvas extends React.Component {
     return (
       <div>
         <canvas id="canvas" width={window.innerWidth} height={window.innerHeight} resize></canvas>
-        <InkPhysics allItems={this.state.allItems} isMouseDown={this.state.isMouseDown} ></InkPhysics>
+        <InkPhysics allItems={this.props.allItems} isMouseDown={this.state.isMouseDown} ></InkPhysics>
       </div>
     ); //canvas is returned to the main program
   }
