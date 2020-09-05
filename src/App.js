@@ -46,12 +46,12 @@ class OptionsDrawer extends React.Component {
 
     return (
       <Radio.Group onChange={onChange} value={value}>
-        <Radio style={radioStyle} value={0}>
+        <Radio.Button style={radioStyle} value={1}>
           Tine Lines
-        </Radio>
-        <Radio style={radioStyle} value={1}>
+        </Radio.Button>
+        <Radio.Button style={radioStyle} value={0}>
           No Tine Lines
-        </Radio>
+        </Radio.Button>
       </Radio.Group>
     );
   }
