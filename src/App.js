@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import './App.css';
 import InkCanvas from './components/inkCanvas.js'
+import InkPhysics from './components/inkPhysics.js'
 import { Radio } from "antd";
 import 'antd/dist/antd.css';
 import paper from 'paper';
 
 class App extends Component {
-  state = { optionsDrawerValue: 0, 
-    allItems : paper.Group }
-  
+  state = {
+    optionsDrawerValue: 0,
+    allItems: paper.Group
+  }
+
   componentDidMount() {
     this.setState({ allItems: new paper.Group() })
   }
@@ -28,7 +31,10 @@ class App extends Component {
       <div>
         <OptionsDrawer value={this.state.optionsDrawerValue} onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
         <div>
-          <InkCanvas expansionRate={1} allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}></InkCanvas>
+          <InkCanvas></InkCanvas>
+          <div>
+          <InkPhysics expansionRate={1} allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}></InkPhysics>
+          </div>
         </div>
       </div>
     );
