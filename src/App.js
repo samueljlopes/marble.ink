@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import InkCanvas from './components/inkCanvas.js'
 import InkPhysics from './components/inkPhysics.js'
+import InkTineLines from './core/inkTineLines.js'
 import { Radio } from "antd";
 import 'antd/dist/antd.css';
 import paper from 'paper';
@@ -13,6 +14,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    paper.install(window);
     this.setState({ allItems: new paper.Group() })
   }
 
@@ -27,14 +29,26 @@ class App extends Component {
   }
 
   render() {
+    let currentCanvasTool;
+    switch(this.state.optionsDrawerValue) {
+      case 0:
+        currentCanvasTool = <InkPhysics expansionRate={1} 
+        allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}></InkPhysics>
+        break;
+      case 1:
+        currentCanvasTool = <InkTineLines></InkTineLines>
+        break;
+      default:
+        currentCanvasTool = <InkPhysics expansionRate={1} 
+        allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}></InkPhysics>
+    }
+
     return (
       <div>
         <OptionsDrawer value={this.state.optionsDrawerValue} onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
         <div>
           <InkCanvas></InkCanvas>
-          <div>
-          <InkPhysics expansionRate={1} allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}></InkPhysics>
-          </div>
+          {currentCanvasTool}
         </div>
       </div>
     );
@@ -52,11 +66,11 @@ class OptionsDrawer extends React.Component {
 
     return (
       <Radio.Group onChange={onChange} value={value}>
-        <Radio.Button style={radioStyle} value={1}>
-          Tine Lines
-        </Radio.Button>
         <Radio.Button style={radioStyle} value={0}>
           No Tine Lines
+        </Radio.Button>
+        <Radio.Button style={radioStyle} value={1}>
+          Tine Lines
         </Radio.Button>
       </Radio.Group>
     );

@@ -26,7 +26,7 @@ class InkCanvas extends React.Component {
   {
     return (
       <div>
-        <canvas id="canvas" width={window.innerWidth} height={window.innerHeight} resize></canvas>
+        <canvas id="canvas" width={window.innerWidth} height={window.innerHeight}></canvas>
       </div>
     ); //canvas is returned to the main program
   }

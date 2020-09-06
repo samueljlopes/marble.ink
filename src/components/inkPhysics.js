@@ -6,8 +6,8 @@ class InkPhysics extends React.Component {
     state = { allTransformations: [], 
             isMouseDown : false }
     componentDidMount() {
-        setInterval(() => this.frameUpdate(), 10);
-        setInterval(() => this.blotPhysics(), 10);
+        this.frameUpdateInterval = setInterval(() => this.frameUpdate(), 10);
+        this.blotPhysicsInterval = setInterval(() => this.blotPhysics(), 10);
     }
 
     render() {
@@ -17,6 +17,7 @@ class InkPhysics extends React.Component {
     }
 
     frameUpdate() {
+        console.log("calling when component is unmounted?")
         paper.view.onMouseDown = (event) => {
           let circle = new Path.Circle({ center: event.point, radius: 10, fillColor: 'black' })
           circle.flatten(0.0001); //This is a bit of a cheat. The number of anchor points on the circle primitive is 4, so the flatten command establishes more anchor points.
@@ -88,6 +89,14 @@ class InkPhysics extends React.Component {
         var pointPrimeX = center.x + ((point.x - center.x) * Math.sqrt(1 + (Math.pow(radius, 2) / Math.pow(magnitude, 2))));
         var pointPrimeY = center.y + ((point.y - center.y) * Math.sqrt(1 + (Math.pow(radius, 2) / Math.pow(magnitude, 2))));
         return (new Point(pointPrimeX, pointPrimeY));
+    }
+
+    componentWillUnmount() 
+    {
+        clearInterval(this.frameUpdateInterval);
+        clearInterval(this.blotPhysicsInterval);
+        paper.view.off('mousedown');
+        paper.view.off('mouseup');
     }
 }
 export default InkPhysics
