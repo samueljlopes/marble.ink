@@ -46,7 +46,7 @@ class App extends Component {
     return (
       <div>
         <OptionsDrawer value={this.state.optionsDrawerValue} onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
-        <div>
+        <div className="mainCanvas">
           <InkCanvas></InkCanvas>
           {currentCanvasTool}
         </div>

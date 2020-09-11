@@ -17,7 +17,6 @@ class InkPhysics extends React.Component {
     }
 
     frameUpdate() {
-        console.log("calling when component is unmounted?")
         paper.view.onMouseDown = (event) => {
           let circle = new Path.Circle({ center: event.point, radius: 10, fillColor: 'black' })
           circle.flatten(0.0001); //This is a bit of a cheat. The number of anchor points on the circle primitive is 4, so the flatten command establishes more anchor points.
