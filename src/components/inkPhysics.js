@@ -96,6 +96,13 @@ class InkPhysics extends React.Component {
         clearInterval(this.blotPhysicsInterval);
         paper.view.off('mousedown');
         paper.view.off('mouseup');
+        if (this.state.allTransformations.length > 0) {
+            for (let i = 0; i < this.state.allTransformations.length; i++) 
+            {
+                this.props.allItems.children[i] = this.state.allTransformations[i];
+                this.state.allTransformations[i].remove();
+            }
+        }
     }
 }
 export default InkPhysics
