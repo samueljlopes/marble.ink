@@ -16,6 +16,7 @@ class InkCanvas extends React.Component {
       new Point(2 * paper.view.center.x, 2 * paper.view.center.y),
       new Point(0, 2 * paper.view.center.y),
       new Point(0, 0));
+    Path.prototype.hasBeenTined = false;
   }
 
   setupCanvas() {

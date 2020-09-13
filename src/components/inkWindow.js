@@ -36,7 +36,7 @@ class InkWindow extends Component {
         allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}></InkPhysics>
         break;
       case 1:
-        currentCanvasTool = <InkTineLines allItems={this.state.allItems} alpha={80} lambda={8}></InkTineLines>
+        currentCanvasTool = <InkTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkTineLines>
         break;
       default:
         currentCanvasTool = <InkPhysics expansionRate={1} 

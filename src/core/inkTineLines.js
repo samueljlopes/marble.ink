@@ -57,7 +57,7 @@ class InkTineLines extends React.Component {
             newPath.join(null, 10);
             newPath.style = blot.style;
             this.props.allItems.children[i] = newPath;
-        } 
+        }
     }
 
     tineLineDisplacementFormula(point, alpha, lambda) {
@@ -112,6 +112,10 @@ class InkTineLines extends React.Component {
         this.state.currentLine.visible = false;
         paper.view.off('mousedown'); //Removes mouse listeners whilst preserving view and project.
         paper.view.off('mouseup');
+        for (let i = 0; i < this.props.allItems.children.length; i++)
+        {
+            this.props.allItems.children[i].hasBeenTined = true;
+        }
     }
 }
 export default InkTineLines
