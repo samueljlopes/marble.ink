@@ -1,0 +1,11 @@
+.mainCanvas {
+    position: relative;
+    z-index: 0;
+}
+
+.optionsDrawer {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+}

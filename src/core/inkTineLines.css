@@ -1,6 +1,6 @@
 .confirmButton {
     position: absolute;
-    right: 0px;
+    right: 20px;
     bottom: 20px;
     z-index: 2;
 }
