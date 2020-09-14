@@ -3,7 +3,6 @@ import './App.css';
 import InkWindow from './components/inkWindow.js'
 import 'antd/dist/antd.css';
 import { Layout, Menu, Typography } from 'antd';
-import styled from 'styled-components';
 
 const { Content, Sider, } = Layout;
 const { Title } = Typography;
@@ -26,10 +25,10 @@ class App extends Component {
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
               <Title style={{ padding: 8, color: "#FFFFFF"}}>marble.ink</Title>
               <Menu.Item key="1">
-                Option 1
+                Canvas
             </Menu.Item>
               <Menu.Item key="2">
-                Option 2
+                About
             </Menu.Item>
             </Menu>
           </Sider>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import paper, { Path, Point } from 'paper'
-import { Button } from "antd";
+import { Button, Popover } from "antd";
 import './inkTineLines.css'
 
 class InkTineLines extends React.Component {
@@ -96,12 +96,14 @@ class InkTineLines extends React.Component {
             >Confirm Line</Button>
         }
         else {
-            console.log("Hiding button")
             confirmButton = <div></div>
         }
+        let spacedDrawer = <Popover title="Options" trigger="click"><Button>Options</Button></Popover>
 
         return (
             <div className="confirmButton">
+                {spacedDrawer}
+                <br/> <br/>
                 {confirmButton}
             </div>
         );
