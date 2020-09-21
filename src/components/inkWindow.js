@@ -18,8 +18,8 @@ class InkWindow extends Component {
     this.setState({ allItems: new paper.Group() })
   }
 
-  onChangeOptionsDrawerValue = (val) => {
-    this.setState({ optionsDrawerValue: val.target.value })
+  onChangeOptionsDrawerValue = (event) => {
+    this.setState({ optionsDrawerValue: event.target.value })
   }
 
   addItemToAllItems = (paperItem) => {
