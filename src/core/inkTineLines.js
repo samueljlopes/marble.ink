@@ -103,7 +103,8 @@ class InkTineLines extends React.Component {
         let d = (new Point(point).subtract(A)).dot(N);
         if (this.state.disableSpacing == false) {
             let smallestDistance = d;
-            for (let i = 0; i < this.state.virtualSpacingLines.length; i++) {
+            //This loop checks the virtual point to get the minimum distance from arbitrary lines
+            for (let i = 0; i < this.state.virtualSpacingLines.length; i++) { //This uses the same logic as before
                 //Getting vector from the path
                 let vL = new Point(this.state.virtualSpacingLines[i].lastSegment.point).subtract(new Point(this.state.virtualSpacingLines[i].firstSegment.point));
                 //Defining N
@@ -206,7 +207,7 @@ class InkTineLines extends React.Component {
 
         let spacedDrawerContent = <div>
             <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced" onClick={() => { this.setState({ disableSpacing: !this.state.disableSpacing }) }} /><br /><br />
-            <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text><InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={50} onChange={this.onChangeSpacingValue.bind(this)} />
+            <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text><InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={50} onChange={this.onChangeSpacingValue.bind(this)} onPressEnter={this.onChangeSpacingValue.bind(this)} />
         </div>;
         let spacedDrawer = <Popover title="Options" trigger="click" content={spacedDrawerContent}><Button>Options</Button></Popover>
 
