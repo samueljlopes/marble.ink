@@ -4,7 +4,7 @@ import { Button, Popover, Switch, InputNumber } from "antd";
 import { Typography, Space } from 'antd';
 import './inkTineLines.css'
 
-const { Text, Link } = Typography;
+const { Text } = Typography;
 class InkTineLines extends React.Component {
     state = {
         currentLine: Path,
@@ -105,10 +105,10 @@ class InkTineLines extends React.Component {
             let smallestDistance = d;
             //This loop checks the virtual point to get the minimum distance from arbitrary lines
             for (let i = 0; i < this.state.virtualSpacingLines.length; i++) { //This uses the same logic as before
-                //Getting vector from the path
+                //Getting vector from the virtual path
                 let vL = new Point(this.state.virtualSpacingLines[i].lastSegment.point).subtract(new Point(this.state.virtualSpacingLines[i].firstSegment.point));
-                //Defining N
                 let vL2 = this.state.virtualSpacingLines[i].lastSegment.point.subtract(point);
+
                 let vcrossProduct = ((vL.x * vL2.y) - (vL.y * vL2.x));
                 let vN = vL;
                 if (vcrossProduct > 0) { //N needs to point in the approximate direction of the circle point
@@ -118,8 +118,7 @@ class InkTineLines extends React.Component {
                 }
                 let vA = this.state.virtualSpacingLines[i].firstSegment.point;
                 let candidateD = (new Point(point).subtract(vA)).dot(vN);
-                if (candidateD < smallestDistance)
-                {
+                if (candidateD < smallestDistance) {
                     smallestDistance = candidateD;
                 }
             }

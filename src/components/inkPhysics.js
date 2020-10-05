@@ -1,26 +1,35 @@
 import paper, { Point, Path, Circle, Group, Segment } from 'paper'
 import React from 'react';
+import './inkPhysics.css'
+import {GithubPicker} from 'react-color';
 
 class InkPhysics extends React.Component {
 
     state = {
         allTransformations: [],
-        isMouseDown: false
+        isMouseDown: false, 
+        inkBlotColour: '#000000'
     }
     componentDidMount() {
         this.frameUpdateInterval = setInterval(() => this.frameUpdate(), 10);
         this.blotPhysicsInterval = setInterval(() => this.blotPhysics(), 10);
     }
 
+    handleChangeComplete = (color) => {
+        this.setState({ inkBlotColour: color.hex });
+    };
+
     render() {
         return (
-            <div></div>
+            <div class="colorPicker">
+                <GithubPicker onChangeComplete={this.handleChangeComplete}></GithubPicker>
+            </div>
         );
     }
 
     frameUpdate() {
         paper.view.onMouseDown = (event) => {
-            let circle = new Path.Circle({ center: event.point, radius: 10, fillColor: 'black' })
+            let circle = new Path.Circle({ center: event.point, radius: 10, fillColor: this.state.inkBlotColour })
             circle.flatten(0.0001); //This is a bit of a cheat. The number of anchor points on the circle primitive is 4, so the flatten command establishes more anchor points.
 
             this.setState({ isMouseDown: true });
@@ -62,7 +71,7 @@ class InkPhysics extends React.Component {
                                 transformation = this.radialDisplacement(this.state.allTransformations[j], center, radius); //Uses existing transformation
                                 this.state.allTransformations[j].remove(); //Removes previous from canvas
                             }
-                            transformation.fillColor = 'black';
+                            transformation.fillColor = this.props.allItems.children[j].fillColor;
                             this.state.allTransformations[j] = (transformation); //Places all blots' transformation into a array
                         }
                     }
