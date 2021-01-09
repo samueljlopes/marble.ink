@@ -19,25 +19,28 @@ class App extends Component {
 
   render() {
     return (
+      // <div>
+      //   <Layout style={{ minHeight: '100vh' }}>
+      //     <Sider /* collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} */>
+      //       <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+      //         <Title style={{ padding: 8, color: "#FFFFFF"}}>marble.ink</Title>
+      //         <Menu.Item key="1">
+      //           Canvas
+      //       </Menu.Item>
+      //         <Menu.Item key="2">
+      //           About
+      //       </Menu.Item>
+      //       </Menu>
+      //     </Sider>
+      //     <Layout className="site-layout">
+      //       <Content style={{ margin: '0px' }}>
+      //         <InkWindow></InkWindow>
+      //       </Content>
+      //     </Layout>
+      //   </Layout>
+      // </div>
       <div>
-        <Layout style={{ minHeight: '100vh' }}>
-          <Sider /* collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} */>
-            <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-              <Title style={{ padding: 8, color: "#FFFFFF"}}>marble.ink</Title>
-              <Menu.Item key="1">
-                Canvas
-            </Menu.Item>
-              <Menu.Item key="2">
-                About
-            </Menu.Item>
-            </Menu>
-          </Sider>
-          <Layout className="site-layout">
-            <Content style={{ margin: '0px' }}>
-              <InkWindow></InkWindow>
-            </Content>
-          </Layout>
-        </Layout>
+        <InkWindow></InkWindow>
       </div>
     );
   }
