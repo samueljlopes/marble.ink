@@ -12,6 +12,7 @@ class InkTineLines extends React.Component {
         spacingValue: 50,
         virtualSpacingLines: []
     }
+
     constructor(props) {
         super(props);
     }
@@ -54,7 +55,6 @@ class InkTineLines extends React.Component {
     }
 
     tineLineDisplacement() {
-        console.log(this.props.allItems);
         for (let i = 0; i < this.props.allItems.children.length; i++) {
             this.props.allItems.children[i].visible = false;
         }
@@ -72,7 +72,7 @@ class InkTineLines extends React.Component {
                 newBlot.push(newSegment);
             }
             let newPath = new Path(newBlot); //Assigning points manually doesn't seem to work, so I'll copy style and replace object
-            newPath.join(null, 10);
+            //newPath.join(null, 10);
             newPath.style = blot.style;
             this.props.allItems.children[i] = newPath;
         }
@@ -137,6 +137,21 @@ class InkTineLines extends React.Component {
             this.setState({ spacingValue: value });
         }
         this.drawSpacedLines();
+    }
+
+    onAllowingSpacing() 
+    {
+        this.setState({ disableSpacing: !this.state.disableSpacing}); 
+        if (this.state.disableSpacing == true)
+        {
+            this.drawSpacedLines();
+        }
+        else
+        {
+            for (let i = 0; i < this.state.virtualSpacingLines.length; i++) {
+                this.state.virtualSpacingLines[i].remove();
+            }
+        }
     }
 
     drawSpacedLines() {
@@ -205,7 +220,7 @@ class InkTineLines extends React.Component {
         }
 
         let spacedDrawerContent = <div>
-            <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced" onClick={() => { this.setState({ disableSpacing: !this.state.disableSpacing }) }} /><br /><br />
+            <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced" onClick={() => {this.onAllowingSpacing() }} /><br /><br />
             <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text><InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={50} onChange={this.onChangeSpacingValue.bind(this)} onPressEnter={this.onChangeSpacingValue.bind(this)} />
         </div>;
         let spacedDrawer = <Popover title="Options" trigger="click" content={spacedDrawerContent}><Button>Options</Button></Popover>

@@ -1,7 +1,7 @@
 import paper, { Point, Path, Circle, Group, Segment } from 'paper'
 import React from 'react';
 import './inkPhysics.css'
-import {GithubPicker} from 'react-color';
+import {CompactPicker} from 'react-color';
 
 class InkPhysics extends React.Component {
 
@@ -22,7 +22,7 @@ class InkPhysics extends React.Component {
     render() {
         return (
             <div class="colorPicker">
-                <GithubPicker onChangeComplete={this.handleChangeComplete}></GithubPicker>
+                <CompactPicker onChangeComplete={this.handleChangeComplete}></CompactPicker>
             </div>
         );
     }
