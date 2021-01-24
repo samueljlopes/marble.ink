@@ -4,6 +4,7 @@ import InkCanvas from './inkCanvas.js'
 import InkPhysics from './inkPhysics.js'
 import InkTineLines from '../core/inkTineLines.js'
 import InkCurvedTineLines from '../core/inkCurvedTineLines.js'
+import InkCircularTineLines from '../core/inkCircularTineLines.js'
 import { Radio } from "antd";
 import 'antd/dist/antd.css';
 import paper from 'paper';
@@ -43,6 +44,9 @@ class InkWindow extends Component {
       case 2:
         currentCanvasTool = <InkCurvedTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkCurvedTineLines>
         break;
+      case 3 : 
+        currentCanvasTool = <InkCircularTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkCircularTineLines>
+        break;
       default:
         currentCanvasTool = <InkPhysics expansionRate={1} 
         allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}></InkPhysics>
@@ -81,6 +85,9 @@ class OptionsDrawer extends React.Component {
         </Radio.Button>
         <Radio.Button style={radioStyle} value={2}>
           Curved Tine Lines
+        </Radio.Button>
+        <Radio.Button style={radioStyle} value={3}>
+          Circular Tine Lines
         </Radio.Button>
       </Radio.Group>
     );

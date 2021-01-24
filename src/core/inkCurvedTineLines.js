@@ -6,7 +6,7 @@ import InkTineLines from './inkTineLines.js'
 
 const { Text } = Typography;
 class InkCurvedTineLines extends InkTineLines { //I did think about writing an entirely new method, but:
-    //According to the paper, a displacement function after an initial straight line pass.
+    //According to the paper, its just a displacement function after an initial straight line pass.
     //So, it is much easier to simply inherit the class and call those methods.
     //However, this is not considered best practise. I cannot find a reasonable explanation why not other than 'we don't think you need to'.
     //This is a problem which inheritance is best placed to solve, however.
