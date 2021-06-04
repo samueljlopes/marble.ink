@@ -123,6 +123,7 @@ class InkCircularTineLines extends React.Component {
     componentWillUnmount() {
         clearInterval(this.frameUpdateInterval);
         this.state.currentLine.visible = false;
+        this.state.currentCircle.visible = false;
         paper.view.off('mousedown'); //Removes mouse listeners whilst preserving view and project.
         paper.view.off('mouseup');
         paper.view.off('mousedrag');
