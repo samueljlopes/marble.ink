@@ -97,7 +97,7 @@ class InkCurvedTineLines extends InkTineLines { //I did think about writing an e
 
     onConfirm() 
     {
-        this.tineLineDisplacement();
+        //this.tineLineDisplacement();
         this.curvedTineLineDisplacement();
     }
 
@@ -111,14 +111,6 @@ class InkCurvedTineLines extends InkTineLines { //I did think about writing an e
             confirmButton = <div></div>
         }
         
-        let spacedDrawerContent = 
-        <div>
-            <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced" onClick={() => {this.onAllowingSpacing() }} /><br /><br />
-            <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text><InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={50} onChange={this.onChangeSpacingValue.bind(this)} onPressEnter={this.onChangeSpacingValue.bind(this)} />
-        </div>;
-
-        let spacedDrawer = <Popover title="Options" trigger="click" content={spacedDrawerContent}><Button>Options</Button></Popover>
-
         return (
            <div class="confirmButton">
                {confirmButton}
