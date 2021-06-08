@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import './inkWindow.css';
 import InkCanvas from './inkCanvas.js'
-import InkPhysics from '../core/inkPhysics.js'
+import InkPhysics from './inkPhysics.js'
 import InkTineLines from '../core/inkTineLines.js'
 import InkCurvedTineLines from '../core/inkCurvedTineLines.js'
 import InkCircularTineLines from '../core/inkCircularTineLines.js'
-import OptionsDrawer from './optionsDrawer.js'
 import { Radio } from "antd";
 import 'antd/dist/antd.css';
 import paper from 'paper';
@@ -14,16 +13,12 @@ import paper from 'paper';
 class InkWindow extends Component {
   state = {
     optionsDrawerValue: 0,
-    allItems: paper.Group,
-    history : [],
+    allItems: paper.Group
   }
 
   componentDidMount() {
     paper.install(window);
-    this.setState(
-      {
-        allItems : new paper.Group(),
-      })
+    this.setState({ allItems: new paper.Group() })
   }
 
   onChangeOptionsDrawerValue = (event) => {
@@ -31,18 +26,9 @@ class InkWindow extends Component {
   }
 
   addItemToAllItems = (paperItem) => {
-    //React likes all state-ful objects immutable, and discourages mutating state directly.
-    let currentHistory = this.state.history;
-    currentHistory.push(this.state.allItems);
-
     let currentAllItems = this.state.allItems;
     currentAllItems.addChild(paperItem);
-    this.setState(
-      { 
-        allItems: currentAllItems,
-        history : currentHistory
-      })
-    console.log(this.state.history)
+    this.setState({ allItems: currentAllItems });
   }
 
   render() {
@@ -79,4 +65,33 @@ class InkWindow extends Component {
     );
   }
 }
+
+class OptionsDrawer extends React.Component {
+  render() {
+    const { value, onChange } = this.props;
+    const radioStyle = {
+      display: "block",
+      height: "30px",
+      lineHeight: "30px"
+    };
+
+    return (
+      <Radio.Group onChange={onChange} value={value}>
+        <Radio.Button style={radioStyle} value={0}>
+          No Tine Lines
+        </Radio.Button>
+        <Radio.Button style={radioStyle} value={1}>
+          Straight Tine Lines
+        </Radio.Button>
+        <Radio.Button style={radioStyle} value={2}>
+          Curved Tine Lines
+        </Radio.Button>
+        <Radio.Button style={radioStyle} value={3}>
+          Circular Tine Lines
+        </Radio.Button>
+      </Radio.Group>
+    );
+  }
+}
+
 export default InkWindow;
