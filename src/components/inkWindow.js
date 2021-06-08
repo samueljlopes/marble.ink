@@ -6,7 +6,7 @@ import InkTineLines from '../core/inkTineLines.js'
 import InkCurvedTineLines from '../core/inkCurvedTineLines.js'
 import InkCircularTineLines from '../core/inkCircularTineLines.js'
 import OptionsDrawer from './optionsDrawer.js'
-import {Button} from "antd";
+import { Radio } from "antd";
 import 'antd/dist/antd.css';
 import paper from 'paper';
 
@@ -30,51 +30,19 @@ class InkWindow extends Component {
     this.setState({ optionsDrawerValue: event.target.value })
   }
 
-  saveStateinHistory() 
-  {
-    // let currentAllItems = this.state.allItems;
-    // let currentHistory = this.state.history;
-    // let currentAllItemsClone = currentAllItems.clone()
-    // currentAllItemsClone.visible = false;
-
-    // currentHistory.push(currentAllItemsClone);
-    // this.setState(
-    //   { 
-    //     history : currentHistory
-    //   })
-  }
-
   addItemToAllItems = (paperItem) => {
     //React likes all state-ful objects immutable, and discourages mutating state directly.
+    let currentHistory = this.state.history;
+    currentHistory.push(this.state.allItems);
+
     let currentAllItems = this.state.allItems;
     currentAllItems.addChild(paperItem);
     this.setState(
-    { 
-        allItems: currentAllItems
-    })
-    this.saveStateinHistory();
-  }
-
-  onUndo() 
-  {
-    for (let i = 0; i < this.state.allItems.children.length; i++) 
-    {
-      console.log(i);
-      this.state.allItems.children[i].visible = false;
-    }
-
-    // this.state.allItems.remove();
-    // let currentHistory = this.state.history;
-
-    // let previousAllItems = currentHistory.pop();
-    // this.setState(
-    //   { 
-    //     allItems : previousAllItems,
-    //     history : currentHistory
-    //   })
-
-    // paper.project._needsUpdate = true;
-    // paper.project.view.update();
+      { 
+        allItems: currentAllItems,
+        history : currentHistory
+      })
+    console.log(this.state.history)
   }
 
   render() {
@@ -85,7 +53,7 @@ class InkWindow extends Component {
         allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}></InkPhysics>
         break;
       case 1:
-        currentCanvasTool = <InkTineLines allItems={this.state.allItems} saveStateinHistory={this.saveStateinHistory.bind(this)} alpha={80} lambda={8}></InkTineLines>
+        currentCanvasTool = <InkTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkTineLines>
         break;
       case 2:
         currentCanvasTool = <InkCurvedTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkCurvedTineLines>
@@ -104,8 +72,6 @@ class InkWindow extends Component {
           <InkCanvas></InkCanvas>
           <div className="optionsDrawer">
             <OptionsDrawer value={this.state.optionsDrawerValue} onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
-            <br></br><br></br>
-            <Button onClick={this.onUndo.bind(this)}>Undo</Button>
           </div>
           {currentCanvasTool}
         </div>

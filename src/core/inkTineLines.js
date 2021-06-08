@@ -76,7 +76,6 @@ class InkTineLines extends React.Component {
             newPath.style = blot.style;
             this.props.allItems.children[i] = newPath;
         }
-        this.props.saveStateinHistory();
     }
 
     tineLineDisplacementFormula(point, alpha, lambda) {
