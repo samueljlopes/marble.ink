@@ -26,59 +26,24 @@ class InkWindow extends Component {
     this.setState({ optionsDrawerValue: event.target.value })
   }
 
-  onUndo() {
-    let previousHistory = this.state.history.pop();
-    if (previousHistory != null || previousHistory != undefined) {
-      paper.project.activeLayer.remove()
-      previousHistory.visible = true;
-      previousHistory.activate();
-    }
-    else
-    {
-      let newLayer = new paper.Layer();
-      newLayer.activate()
-    }
-  }
-
-  onRedo() {
-
-  }
-
   addItemToAllItems = (paperItem) => {
     let currentAllItems = this.state.allItems;
     currentAllItems.addChild(paperItem);
     this.setState({ allItems: currentAllItems });
   }
 
-  addSaveToHistory() {
-    var currentHistory = paper.project.activeLayer.clone();
-    currentHistory.visible = false;
-    currentHistory.selected = true;
-    this.state.history.push(currentHistory);
-  }
-
   render() {
-    let currentCanvasTool;
-    switch(this.state.optionsDrawerValue) {
-      case 0:
-        currentCanvasTool = <InkPhysics expansionRate={1} 
-        allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} 
-        addSaveToHistory={this.addSaveToHistory.bind(this)}>
-        </InkPhysics>
-        break;
-      case 1:
-        currentCanvasTool = <InkTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkTineLines>
-        break;
-      case 2:
-        currentCanvasTool = <InkCurvedTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkCurvedTineLines>
-        break;
-      case 3 : 
-        currentCanvasTool = <InkCircularTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkCircularTineLines>
-        break;
-      default:
-        currentCanvasTool = <InkPhysics expansionRate={1} 
-        allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}></InkPhysics>
-    }
+    const tool = (toolNumber) => ({
+      0: <InkPhysics expansionRate={1} 
+      allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}>
+      </InkPhysics>,
+      1: <InkTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkTineLines>,
+      2: <InkCurvedTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkCurvedTineLines>,
+      3: <InkCurvedTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkCurvedTineLines>
+    })[toolNumber]
+    
+    const currentCanvasTool = tool(this.state.optionsDrawerValue)
+    //Modify with HOC here
 
     return (
       <div>
@@ -87,8 +52,8 @@ class InkWindow extends Component {
           <div className="optionsDrawer">
             <OptionsDrawer value={this.state.optionsDrawerValue} onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
             <br></br><br></br>
-            <Button onClick={this.onUndo.bind(this)} disabled>Undo</Button>
-            <Button onClick={this.onRedo.bind(this)} disabled>Redo</Button>
+            <Button disabled>Undo</Button> 
+            <Button disabled>Redo</Button>
           </div>
           {currentCanvasTool}
         </div>

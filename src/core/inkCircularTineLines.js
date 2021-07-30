@@ -26,7 +26,6 @@ class InkCircularTineLines extends React.Component {
     }
 
     frameUpdate() {
-        
         paper.view.onMouseDown = (event) => {
             this.state.currentLine = new Path();
             this.state.currentLine.add(event.point);

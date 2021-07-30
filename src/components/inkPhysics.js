@@ -29,8 +29,6 @@ class InkPhysics extends React.Component {
 
     frameUpdate() {
         paper.view.onMouseDown = (event) => {
-            this.props.addSaveToHistory()
-
             let circle = new Path.Circle({ center: event.point, radius: 10, fillColor: this.state.inkBlotColour })
             circle.flatten(0.0001); //This is a bit of a cheat. The number of anchor points on the circle primitive is 4, so the flatten command establishes more anchor points.
 
@@ -73,7 +71,7 @@ class InkPhysics extends React.Component {
                                 transformation = this.radialDisplacement(this.state.allTransformations[j], center, radius); //Uses existing transformation
                                 this.state.allTransformations[j].remove(); //Removes previous from canvas
                             }
-                            transformation.fillColor = this.props.allItems.children[j].fillColor;
+                            transformation.fillColor = 'red';
                             this.state.allTransformations[j] = (transformation); //Places all blots' transformation into a array
                         }
                     }

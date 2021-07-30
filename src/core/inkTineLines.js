@@ -5,6 +5,8 @@ import { Typography, Space } from 'antd';
 import './inkTineLines.css'
 
 const { Text } = Typography;
+
+//TODO: Add tweening: Unclear whether this should be called from a seperate animation component 
 class InkTineLines extends React.Component {
     state = {
         currentLine: Path,

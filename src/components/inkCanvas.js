@@ -2,7 +2,6 @@ import paper, { Point, Path} from 'paper';
 import React from 'react';
 
 class InkCanvas extends React.Component {
-  //State is effectively a property outside the data flow, not an argument passed in
   constructor(props) {
     super(props);
   }
