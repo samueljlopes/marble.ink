@@ -4,21 +4,30 @@ import * as ToolComponents from './core'
 
 const components = {
   0: 'InkPhysics',
-  1: 'InkTineLines'
+  1: 'InkTineLines',
+  2: 'InkCurvedTineLines',
+  3: 'InkCircularTineLines'
 };
 
 class InkTool extends React.Component {
-  shouldComponentUpdate(){
-    return false;
-}
-
   render() {
     const SelectedTool = ToolComponents[components[this.props.type]];
     console.log(this.props.allItems)
 
+    let specificProps = {}
+    if (this.props.type == 0) //Special case for when user originally adds ink blots
+    {
+      specificProps.expansionRate = 1;
+    }
+    else
+    {
+      specificProps.alpha = 80
+      specificProps.lambda = 8
+    }
+
     return(
       <div>
-        <SelectedTool {...this.props}></SelectedTool>
+        <SelectedTool {...specificProps} {...this.props}></SelectedTool>
       </div>
     )
   }

@@ -32,7 +32,7 @@ class InkWindow extends Component {
   render() {
     return (
         <div className="mainCanvas">
-          <InkCanvas>
+          <InkCanvas></InkCanvas>
           <div className="optionsDrawer">
             <OptionsDrawer value={this.state.optionsDrawerValue} onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
             <br></br><br></br>
@@ -43,7 +43,6 @@ class InkWindow extends Component {
             <InkTool type={this.state.optionsDrawerValue} allItems={this.state.allItems}
             addItemToAllItems={this.addItemToAllItems.bind(this)}></InkTool>
            </div>
-          </InkCanvas>
       </div>
     );
   }

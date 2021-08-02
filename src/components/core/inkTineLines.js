@@ -21,7 +21,6 @@ class InkTineLines extends React.Component {
 
     componentDidMount() {
         this.state.currentLine = new Path();
-        this.props.animate();
         this.frameUpdateInterval = setInterval(() => this.frameUpdate(), 10);
     }
 
