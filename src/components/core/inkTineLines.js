@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import paper, { Path, Point } from 'paper'
 import { Button, Popover, Switch, InputNumber } from "antd";
 import { Typography, Space } from 'antd';
-import './inkTineLines.css'
+import './styles/inkTineLines.css'
 
 const { Text } = Typography;
 
@@ -21,6 +21,7 @@ class InkTineLines extends React.Component {
 
     componentDidMount() {
         this.state.currentLine = new Path();
+        this.props.animate();
         this.frameUpdateInterval = setInterval(() => this.frameUpdate(), 10);
     }
 

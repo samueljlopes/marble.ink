@@ -1,18 +1,21 @@
 import paper, { Point, Path, Circle, Group, Segment } from 'paper'
 import React from 'react';
-import './inkPhysics.css'
-import {CompactPicker} from 'react-color';
+import './styles/inkPhysics.css'
+import { CompactPicker } from 'react-color';
 
 class InkPhysics extends React.Component {
 
     state = {
         allTransformations: [],
-        isMouseDown: false, 
+        isMouseDown: false,
         inkBlotColour: '#000000'
     }
+
     componentDidMount() {
-        this.frameUpdateInterval = setInterval(() => this.frameUpdate(), 10);
-        this.blotPhysicsInterval = setInterval(() => this.blotPhysics(), 10);
+        this.frameUpdateInterval = setInterval(() =>
+            this.frameUpdate(), 10);
+        this.blotPhysicsInterval = setInterval(() =>
+            this.blotPhysics(), 10);
     }
 
     handleChangeComplete = (color) => {
@@ -21,36 +24,38 @@ class InkPhysics extends React.Component {
 
     render() {
         return (
-            <div class="colorPicker">
+            <div className="colorPicker">
                 <CompactPicker onChangeComplete={this.handleChangeComplete}></CompactPicker>
             </div>
         );
     }
 
     frameUpdate() {
-        paper.view.onMouseDown = (event) => {
-            let circle = new Path.Circle({ center: event.point, radius: 10, fillColor: this.state.inkBlotColour })
-            circle.flatten(0.0001); //This is a bit of a cheat. The number of anchor points on the circle primitive is 4, so the flatten command establishes more anchor points.
+        if (this.props.allItems.children != undefined) {
+            paper.view.onMouseDown = (event) => {
+                let circle = new Path.Circle({ center: event.point, radius: 10, fillColor: this.state.inkBlotColour })
+                circle.flatten(0.0001); //This is a bit of a cheat. The number of anchor points on the circle primitive is 4, so the flatten command establishes more anchor points.
 
-            this.setState({ isMouseDown: true });
-            this.props.addItemToAllItems(circle);
-        }
+                this.setState({ isMouseDown: true });
+                this.props.addItemToAllItems(circle);
+            }
 
-        paper.view.onMouseUp = (event) => {
-            this.setState({ isMouseDown: false });
-        }
+            paper.view.onMouseUp = (event) => {
+                this.setState({ isMouseDown: false });
+            }
 
-        if (this.state.isMouseDown && this.props.allItems.children.length > 0) {
-            let length = this.props.allItems.children.length;
-            let currentBlot = this.props.allItems.children[length - 1];
-            currentBlot.scale(0.01 + this.props.expansionRate);
-            this.props.allItems.children[length - 1] = currentBlot;
+            if (this.state.isMouseDown && this.props.allItems.children.length > 0) {
+                let length = this.props.allItems.children.length;
+                let currentBlot = this.props.allItems.children[length - 1];
+                currentBlot.scale(0.01 + this.props.expansionRate);
+                this.props.allItems.children[length - 1] = currentBlot;
+            }
         }
     }
 
     blotPhysics() {
         //Ink blot physics. Shall be commented for posterity
-        if (this.state.isMouseDown) { //Only sims when mouse is down
+        if (this.state.isMouseDown && this.props.allItems.children != undefined) { //Only sims when mouse is down
             if (this.state.allTransformations.length > 0) {
                 this.state.allTransformations.forEach(function (entry) {
                     entry.remove(); //Remove previous frame's transformations
@@ -79,7 +84,7 @@ class InkPhysics extends React.Component {
                 for (let i = 0; i < this.props.allItems.children.length; i++) {
                     if (this.state.allTransformations[i] != undefined) { //Checks whether to render the circle or the transformation
                         this.props.allItems.children[i].visible = false;
-                    } 
+                    }
                 }
             }
         }

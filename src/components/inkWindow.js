@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
-import './inkWindow.css';
-import InkCanvas from './inkCanvas.js'
-import InkPhysics from './inkPhysics.js'
-import InkTineLines from '../core/inkTineLines.js'
-import InkCurvedTineLines from '../core/inkCurvedTineLines.js'
-import InkCircularTineLines from '../core/inkCircularTineLines.js'
-import { Radio, Button} from "antd";
-import 'antd/dist/antd.css';
-import paper from 'paper';
+import paper, { Tool } from 'paper';
 
+import InkCanvas from './inkCanvas.js'
+import InkTool from './inkTool.js'
+import { Radio, Button} from "antd";
+
+import 'antd/dist/antd.css';
+import './styles/inkWindow.css';
 
 class InkWindow extends Component {
   state = {
     optionsDrawerValue: 0,
     allItems: paper.Group,
-    history: []
   }
 
   componentDidMount() {
@@ -33,30 +30,20 @@ class InkWindow extends Component {
   }
 
   render() {
-    const tool = (toolNumber) => ({
-      0: <InkPhysics expansionRate={1} 
-      allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems}>
-      </InkPhysics>,
-      1: <InkTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkTineLines>,
-      2: <InkCurvedTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkCurvedTineLines>,
-      3: <InkCurvedTineLines allItems={this.state.allItems} addItemToAllItems={this.addItemToAllItems} alpha={80} lambda={8}></InkCurvedTineLines>
-    })[toolNumber]
-    
-    const currentCanvasTool = tool(this.state.optionsDrawerValue)
-    //Modify with HOC here
-
     return (
-      <div>
         <div className="mainCanvas">
-          <InkCanvas></InkCanvas>
+          <InkCanvas>
           <div className="optionsDrawer">
             <OptionsDrawer value={this.state.optionsDrawerValue} onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
             <br></br><br></br>
             <Button disabled>Undo</Button> 
             <Button disabled>Redo</Button>
           </div>
-          {currentCanvasTool}
-        </div>
+          <div>
+            <InkTool type={this.state.optionsDrawerValue} allItems={this.state.allItems}
+            addItemToAllItems={this.addItemToAllItems.bind(this)}></InkTool>
+           </div>
+          </InkCanvas>
       </div>
     );
   }
