@@ -74,7 +74,6 @@ class InkTineLines extends React.Component {
                 newBlot.push(newSegment);
             }
             let newPath = new Path(newBlot); //Assigning points manually doesn't seem to work, so I'll copy style and replace object
-            //newPath.join(null, 10);
             newPath.style = blot.style;
             this.props.allItems.children[i] = newPath;
         }

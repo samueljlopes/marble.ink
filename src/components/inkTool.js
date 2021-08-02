@@ -8,8 +8,14 @@ const components = {
   2: 'InkCurvedTineLines',
   3: 'InkCircularTineLines'
 };
+const animationTime = 2000
+
 
 class InkTool extends React.Component {
+  animate(startObject, endObject) {
+    //This assumes that both objects are path objects
+  }
+
   render() {
     const SelectedTool = ToolComponents[components[this.props.type]];
     console.log(this.props.allItems)
@@ -27,7 +33,8 @@ class InkTool extends React.Component {
 
     return(
       <div>
-        <SelectedTool {...specificProps} {...this.props}></SelectedTool>
+        <SelectedTool animate={this.animate.bind(this)} 
+        {...specificProps} {...this.props}></SelectedTool>
       </div>
     )
   }

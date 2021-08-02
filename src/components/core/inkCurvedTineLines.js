@@ -23,7 +23,6 @@ class InkCurvedTineLines extends InkTineLines { //I did think about writing an e
     }
 
     componentDidMount() {
-        console.log("curved tine line mounted")
         this.state.currentLine = new Path();
         this.state.virtualCurvedPath = new Path();
         this.frameUpdateInterval = setInterval(() => this.frameUpdate(), 10);
