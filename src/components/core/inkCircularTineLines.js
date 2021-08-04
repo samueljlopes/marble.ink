@@ -39,7 +39,7 @@ class InkCircularTineLines extends React.Component {
             {
                 center : this.state.currentLine.firstSegment.point, 
                 radius : L.length, 
-                strokeColor: new paper.Color(0, 0, 1),
+                strokeColor: '#40a9ff',
                 strokeWidth: 5,
                 strokeCap: 'round',
                 dashArray: [4, 10],

@@ -6,7 +6,6 @@ import './styles/inkTineLines.css'
 
 const { Text } = Typography;
 
-//TODO: Add tweening: Unclear whether this should be called from a seperate animation component 
 class InkTineLines extends React.Component {
     state = {
         currentLine: Path,
@@ -29,7 +28,7 @@ class InkTineLines extends React.Component {
             this.state.currentLine.visible = false;
             this.state.currentLine = new Path(
                 {
-                    strokeColor: new paper.Color(0, 0, 1),
+                    strokeColor: '#40a9ff',
                     strokeWidth: 5,
                     strokeCap: 'round',
                     dashArray: [4, 10],
@@ -174,7 +173,7 @@ class InkTineLines extends React.Component {
             }
             newPath = new Path(
                 {
-                    strokeColor: new paper.Color(0, 0, 1),
+                    strokeColor: '#40a9ff',
                     strokeWidth: 5,
                     strokeCap: 'round',
                     dashArray: [4, 10],
@@ -196,7 +195,7 @@ class InkTineLines extends React.Component {
             }
             newPath = new Path(
                 {
-                    strokeColor: new paper.Color(0, 0, 1),
+                    strokeColor: '#40a9ff',
                     strokeWidth: 5,
                     strokeCap: 'round',
                     dashArray: [4, 10],

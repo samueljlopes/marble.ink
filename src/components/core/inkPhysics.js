@@ -42,6 +42,8 @@ class InkPhysics extends React.Component {
 
             paper.view.onMouseUp = (event) => {
                 this.setState({ isMouseDown: false });
+                //Right now, transformations continue to subsist in this local component
+                //For ease of undo/redo functionality, perhaps suspend the blot physics sim, save to all items, then begin again?
             }
 
             if (this.state.isMouseDown && this.props.allItems.children.length > 0) {

@@ -34,7 +34,7 @@ class InkCurvedTineLines extends InkTineLines { //I did think about writing an e
             this.state.virtualCurvedPath.visible = false;
             this.state.currentLine = new Path(
                 {
-                    strokeColor: new paper.Color(0, 0, 1),
+                    strokeColor: '#40a9ff',
                     strokeWidth: 5,
                     strokeCap: 'round',
                     dashArray: [4, 10],
@@ -84,7 +84,7 @@ class InkCurvedTineLines extends InkTineLines { //I did think about writing an e
                 newBlot.push(newSegment);
             }
             let newPath = new Path(newBlot); //Assigning points manually doesn't seem to work, so I'll copy style and replace object
-            newPath.join(null, 10);
+            //newPath.join(null, 10);
             newPath.style = blot.style;
 
             this.props.animate(this.props.allItems.children[i], newPath)
@@ -112,7 +112,6 @@ class InkCurvedTineLines extends InkTineLines { //I did think about writing an e
             <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced" onClick={() => {this.onAllowingSpacing() }} /><br /><br />
             <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text><InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={50} onChange={this.onChangeSpacingValue.bind(this)} onPressEnter={this.onChangeSpacingValue.bind(this)} />
         </div>;
-
         let spacedDrawer = <Popover title="Options" trigger="click" content={spacedDrawerContent}><Button>Options</Button></Popover>
 
         return (
