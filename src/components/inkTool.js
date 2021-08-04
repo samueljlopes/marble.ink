@@ -1,5 +1,5 @@
 import React from 'react'; 
-import paper, {Group} from 'paper';
+import paper from 'paper';
 import * as ToolComponents from './core'
 
 const components = {
@@ -10,10 +10,26 @@ const components = {
 };
 const animationTime = 2000
 
-
 class InkTool extends React.Component {
+
+  //Abstraction of animation (and perhaps lighting) functionality is now possible.
+  //This method can be called from any tool.
   animate(startObject, endObject) {
-    //This assumes that both objects are path objects
+    //This assumes that both objects are path objects. 
+    let startState = startObject.clone({ insert: false })
+    endObject.visible = false;
+
+    var tween = startObject.tween({
+      duration: animationTime,
+      easing: 'easeOutCubic'
+    });
+    tween.onUpdate = function(event) {
+      startObject.interpolate(startState, endObject, event.factor)
+    };
+    tween.then(function() 
+    {
+      endObject.remove();
+    })
   }
 
   render() {

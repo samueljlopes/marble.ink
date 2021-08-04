@@ -1,4 +1,4 @@
-import paper, { Point, Path, Circle, Group, Segment } from 'paper'
+import paper, { Point, Path } from 'paper'
 import React from 'react';
 import './styles/inkPhysics.css'
 import { CompactPicker } from 'react-color';

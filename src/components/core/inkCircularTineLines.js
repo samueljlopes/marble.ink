@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import paper, { Path, Point } from 'paper'
-import { Button, Popover, Switch, InputNumber } from "antd";
-import { Typography, Space } from 'antd';
+import { Button } from "antd";
+import { Typography } from 'antd';
 import { create, all } from 'mathjs'
 
 const config = { }
@@ -58,10 +58,6 @@ class InkCircularTineLines extends React.Component {
 
     circularTineLineDisplacement() {
         for (let i = 0; i < this.props.allItems.children.length; i++) {
-            this.props.allItems.children[i].visible = false;
-        }
-
-        for (let i = 0; i < this.props.allItems.children.length; i++) {
             var blot = this.props.allItems.children[i];
             var newBlot = [];
             for (let j = 0; j < blot.segments.length; j++) {
@@ -74,9 +70,9 @@ class InkCircularTineLines extends React.Component {
                 newBlot.push(newSegment);
             }
             let newPath = new Path(newBlot); //Assigning points manually doesn't seem to work, so I'll copy style and replace object
-            //newPath.join(null, 10);
             newPath.style = blot.style;
-            this.props.allItems.children[i] = newPath;
+
+            this.props.animate(this.props.allItems.children[i], newPath);
         }
     }
 

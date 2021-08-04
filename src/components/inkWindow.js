@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import paper, { Tool } from 'paper';
+import paper from 'paper';
 
 import InkCanvas from './inkCanvas.js'
 import InkTool from './inkTool.js'

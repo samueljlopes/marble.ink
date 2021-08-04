@@ -58,10 +58,6 @@ class InkTineLines extends React.Component {
 
     tineLineDisplacement() {
         for (let i = 0; i < this.props.allItems.children.length; i++) {
-            this.props.allItems.children[i].visible = false;
-        }
-
-        for (let i = 0; i < this.props.allItems.children.length; i++) {
             var blot = this.props.allItems.children[i];
             var newBlot = [];
             for (let j = 0; j < blot.segments.length; j++) {
@@ -73,9 +69,11 @@ class InkTineLines extends React.Component {
                 newSegment.point = newPoint;
                 newBlot.push(newSegment);
             }
+
             let newPath = new Path(newBlot); //Assigning points manually doesn't seem to work, so I'll copy style and replace object
             newPath.style = blot.style;
-            this.props.allItems.children[i] = newPath;
+            
+            this.props.animate(this.props.allItems.children[i], newPath);
         }
     }
 
