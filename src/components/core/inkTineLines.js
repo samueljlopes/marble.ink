@@ -99,6 +99,7 @@ class InkTineLines extends React.Component {
         let A = this.state.currentLine.firstSegment.point;
         //Defining D
         let d = (new Point(point).subtract(A)).dot(N);
+        
         if (this.state.disableSpacing == false) {
             let smallestDistance = d;
             //This loop checks the virtual point to get the minimum distance from arbitrary lines
@@ -109,7 +110,7 @@ class InkTineLines extends React.Component {
 
                 let vcrossProduct = ((vL.x * vL2.y) - (vL.y * vL2.x));
                 let vN = vL;
-                if (vcrossProduct > 0) { //N needs to point in the approximate direction of the circle point
+                if (vcrossProduct >= 0) { //N needs to point in the approximate direction of the circle point
                     vN = vN.rotate(-90);
                 } else {
                     vN = vN.rotate(90);
@@ -219,7 +220,7 @@ class InkTineLines extends React.Component {
 
         let spacedDrawerContent = <div>
             <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced" onClick={() => {this.onAllowingSpacing() }} /><br /><br />
-            <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text><InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={50} onChange={this.onChangeSpacingValue.bind(this)} onPressEnter={this.onChangeSpacingValue.bind(this)} />
+            <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text><InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={80} onChange={this.onChangeSpacingValue.bind(this)} onPressEnter={this.onChangeSpacingValue.bind(this)} />
         </div>;
         let spacedDrawer = <Popover title="Options" trigger="click" content={spacedDrawerContent}><Button>Options</Button></Popover>
 

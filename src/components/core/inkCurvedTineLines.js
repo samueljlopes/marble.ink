@@ -1,21 +1,17 @@
 import React, { Component } from 'react';
 import paper, { Path, Point } from 'paper';
-import { Button, Popover, Switch, InputNumber } from "antd";
-import { Typography, Space } from 'antd';
-import InkTineLines from './inkTineLines.js'
+import { Button, Popover, InputNumber, Collapse, Switch, Typography } from "antd";
 
 const { Text } = Typography;
-class InkCurvedTineLines extends InkTineLines { //I did think about writing an entirely new method, but:
-    //According to the paper, its just a displacement function after an initial straight line pass.
-    //So, it is much easier to simply inherit the class and call those methods.
-    //However, this is not considered best practise. I cannot find a reasonable explanation why not other than 'we don't think you need to'.
-    //This is a problem which inheritance is best placed to solve, however.
+const { Panel } = Collapse;
+
+class InkCurvedTineLines extends React.Component { 
     state = {
         currentLine: Path,
         virtualCurvedPath : Path,
-        amplitude: 50,
-        wavelength: 0.1,
-        phase: 0,
+        amplitude: 50, //Parameter 0
+        phase: 0, //Parameter 1
+        wavelength: 0.1 //Parameter 2
     }
 
     constructor(props) {
@@ -29,8 +25,8 @@ class InkCurvedTineLines extends InkTineLines { //I did think about writing an e
     }
 
     frameUpdate() {
+        this.state.currentLine.visible = false;
         paper.view.onMouseDown = (event) => {
-            this.state.currentLine.visible = false;
             this.state.virtualCurvedPath.visible = false;
             this.state.currentLine = new Path(
                 {
@@ -46,19 +42,9 @@ class InkCurvedTineLines extends InkTineLines { //I did think about writing an e
         paper.view.onMouseUp = (event) => {
             this.state.currentLine.add(event.point);
             this.setState({ currentLine: this.state.currentLine });
-
-            let complexity = 100; //Needed to display the sine curve.
-            this.state.virtualCurvedPath = new Path();
-            for (let i = 0; i < complexity; i++) {
-                var offset = i / complexity * this.state.currentLine.length;
-                var point = this.state.currentLine.getPointAt(offset);
-                var normal = this.state.currentLine.getNormalAt(offset);
-                normal = normal.multiply(this.displacementFormula(offset));
-                this.state.virtualCurvedPath.add(point.add(normal));
-            }
-            this.state.virtualCurvedPath.style = this.state.currentLine.style;
+            this.drawVirtualCurvedPath();
         }
-        this.state.currentLine.style.dashOffset -= 1; //Adds a little animation to the dashes
+        //this.state.currentLine.style.dashOffset -= 1; //Adds a little animation to the dashes
         this.state.virtualCurvedPath.style.dashOffset -= 1;
     }
 
@@ -91,15 +77,49 @@ class InkCurvedTineLines extends InkTineLines { //I did think about writing an e
         }
     }
 
+    drawVirtualCurvedPath() 
+    {
+        let complexity = 100; //Needed to display the sine curve.
+
+        this.state.virtualCurvedPath.remove();
+        this.state.virtualCurvedPath = new Path();
+        for (let i = 0; i < complexity; i++) {
+            var offset = i / complexity * this.state.currentLine.length;
+            var point = this.state.currentLine.getPointAt(offset);
+            var normal = this.state.currentLine.getNormalAt(offset);
+            normal = normal.multiply(this.displacementFormula(offset));
+            this.state.virtualCurvedPath.add(point.add(normal));
+        }
+        this.state.virtualCurvedPath.style = this.state.currentLine.style;
+    }
+
+    onOptionsChange(param, value) 
+    {
+        //amplitude = Parameter 0
+        //phase = Parameter 1
+        //wavelength = Parameter 2
+        switch (param) {
+            case 0:
+                this.setState({ amplitude: value });
+                break;
+            case 1:
+                this.setState({ phase: value });
+                break;
+            case 2:
+                this.setState({ wavelength: value });
+                break;
+          }
+        this.drawVirtualCurvedPath();
+    }
+
     onConfirm() 
     {
-        this.tineLineDisplacement();
         this.curvedTineLineDisplacement();
     }
 
     render() {
         let confirmButton;
-        if (this.state.currentLine.visible == true) {
+        if (this.state.virtualCurvedPath.visible == true) {
             confirmButton = <Button type="primary" onClick={() => this.onConfirm()}
             >Confirm Line</Button>
         }
@@ -107,16 +127,35 @@ class InkCurvedTineLines extends InkTineLines { //I did think about writing an e
             confirmButton = <div></div>
         }
         
-        let spacedDrawerContent = 
-        <div>
-            <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced" onClick={() => {this.onAllowingSpacing() }} /><br /><br />
-            <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text><InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={50} onChange={this.onChangeSpacingValue.bind(this)} onPressEnter={this.onChangeSpacingValue.bind(this)} />
+        let optionsDrawerContent = <div>
+        <Collapse defaultActiveKey={['1']} ghost>
+            <Panel header="Curved Line Options">
+                <Text>Amplitude:</Text>
+                    <InputNumber min={20} max={200} step={5} defaultValue={this.state.amplitude} onChange={this.onOptionsChange.bind(this, 0)}/>
+                <br></br>
+                <Text>Phase:</Text><br></br>
+                    <InputNumber min={0} max={100} defaultValue={this.state.phase} onChange={this.onOptionsChange.bind(this, 1)}/>
+                <br></br>
+                <Text>Wavelength:</Text>
+                    <InputNumber min={0.01} max={1} step={0.01} defaultValue={this.state.wavelength} onChange={this.onOptionsChange.bind(this, 2)}/>
+                </Panel>
+            <Panel header="Spacing Options">
+                <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced"/> 
+                <br/><br />
+                <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text>
+                    <InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={80}/>
+            </Panel>
+        </Collapse>
         </div>;
-        let spacedDrawer = <Popover title="Options" trigger="click" content={spacedDrawerContent}><Button>Options</Button></Popover>
+        let optionsDrawer = <Popover title="Options" trigger="click" content={optionsDrawerContent}><Button>Options</Button></Popover>
 
         return (
-           <div class="confirmButton">
-               {confirmButton}
+           <div className="confirmButton">
+                {optionsDrawer}
+                <br></br><br></br>
+                <div>
+                    {confirmButton}
+                </div>
            </div>
         );
     }

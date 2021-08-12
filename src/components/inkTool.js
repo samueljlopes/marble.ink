@@ -14,7 +14,7 @@ class InkTool extends React.Component {
 
   //Abstraction of animation (and perhaps lighting) functionality is now possible.
   //This method can be called from any tool.
-  animate(startObject, endObject) {
+  animate(startObject, endObject, direction) {
     //This assumes that both objects are path objects. 
     let startState = startObject.clone({ insert: false })
     endObject.visible = false;
@@ -23,9 +23,14 @@ class InkTool extends React.Component {
       duration: animationTime,
       easing: 'easeOutCubic'
     });
+    
     tween.onUpdate = function(event) {
-      startObject.interpolate(startState, endObject, event.factor)
+      for (let i = 0; i < startObject.segments.length; i++)
+      {
+        startObject.segments[i].interpolate(startState.segments[i], endObject.segments[i], event.factor)
+      }
     };
+    
     tween.then(function() 
     {
       endObject.remove();
