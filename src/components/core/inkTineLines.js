@@ -1,21 +1,28 @@
-import React, { Component } from 'react';
+import React from 'react';
 import paper, { Path, Point } from 'paper'
-import { Button, Popover, Switch, InputNumber } from "antd";
+import { Button, Popover, Switch, InputNumber, Collapse } from "antd";
 import { Typography, Space } from 'antd';
 import './styles/inkTineLines.css'
 
 const { Text } = Typography;
+const { Panel } = Collapse;
 
 class InkTineLines extends React.Component {
     state = {
         currentLine: Path,
+        //Line options
+        alpha: 0, 
+        lambda: 0,
+        //Spacing options
         disableSpacing: true,
-        spacingValue: 50,
+        spacingValue: 80,
         virtualSpacingLines: []
     }
 
     constructor(props) {
         super(props);
+        this.state.alpha = this.props.alpha;
+        this.state.lambda = this.props.lambda;
     }
 
     componentDidMount() {
@@ -57,13 +64,24 @@ class InkTineLines extends React.Component {
 
     tineLineDisplacement() {
         for (let i = 0; i < this.props.allItems.children.length; i++) {
-            var blot = this.props.allItems.children[i];
+            var blot = this.props.allItems.children[i].segments;
             var newBlot = [];
-            for (let j = 0; j < blot.segments.length; j++) {
-                let oldPoint = blot.segments[j].point;
+            for (let j = 0; j < blot.length; j++) {
+                let oldPoint = blot[j].point;
                 let newPoint =
                     this.tineLineDisplacementFormula(oldPoint,
-                        this.props.alpha, this.props.lambda);
+                        this.state.alpha, this.state.lambda, this.state.currentLine);
+
+                if (this.state.disableSpacing == false)
+                {
+                    for (let v = 0; v < this.state.virtualSpacingLines.length; v++)
+                    {
+                        //console.log("Running virtual line sim")
+                        newPoint = this.tineLineDisplacementFormula(newPoint,
+                            this.state.alpha, this.state.lambda, this.state.virtualSpacingLines[v]);
+                    }
+                }
+
                 let newSegment = new paper.Segment();
                 newSegment.point = newPoint;
                 newBlot.push(newSegment);
@@ -71,19 +89,18 @@ class InkTineLines extends React.Component {
 
             let newPath = new Path(newBlot); //Assigning points manually doesn't seem to work, so I'll copy style and replace object
             newPath.style = blot.style;
-            
             this.props.animate(this.props.allItems.children[i], newPath);
         }
     }
 
-    tineLineDisplacementFormula(point, alpha, lambda) {
+    tineLineDisplacementFormula(point, alpha, lambda, line) {
         //Required values: L(tine line), N(unit vector perpendicular to L), A(point on L), M(L unit vector)
         // P′= P + (((αλ)/(d+λ)) * M), where d = (P−A)⋅ N and α,λ control the maximum shift and sharpness of the shift gradient
 
         //Getting vector from the path
-        let L = new Point(this.state.currentLine.lastSegment.point).subtract(new Point(this.state.currentLine.firstSegment.point));
+        let L = new Point(line.lastSegment.point).subtract(new Point(line.firstSegment.point));
         //Defining N
-        let L2 = this.state.currentLine.lastSegment.point.subtract(point);
+        let L2 = line.lastSegment.point.subtract(point);
         let crossProduct = ((L.x * L2.y) - (L.y * L2.x));
         let N = L;
         if (crossProduct > 0) { //N needs to point in the approximate direction of the circle point
@@ -96,10 +113,10 @@ class InkTineLines extends React.Component {
         let M = L;
         M = M.normalize();
         //Defining A
-        let A = this.state.currentLine.firstSegment.point;
+        let A = line.firstSegment.point;
         //Defining D
         let d = (new Point(point).subtract(A)).dot(N);
-        
+    /*    
         if (this.state.disableSpacing == false) {
             let smallestDistance = d;
             //This loop checks the virtual point to get the minimum distance from arbitrary lines
@@ -110,13 +127,13 @@ class InkTineLines extends React.Component {
 
                 let vcrossProduct = ((vL.x * vL2.y) - (vL.y * vL2.x));
                 let vN = vL;
-                if (vcrossProduct >= 0) { //N needs to point in the approximate direction of the circle point
+                if (vcrossProduct >= -1) { //N needs to point in the approximate direction of the circle point
                     vN = vN.rotate(-90);
                 } else {
                     vN = vN.rotate(90);
                 }
                 let vA = this.state.virtualSpacingLines[i].firstSegment.point;
-                let candidateD = (new Point(point).subtract(vA)).dot(vN);
+                let candidateD = Math.abs((new Point(point).subtract(vA)).dot(vN));
                 if (candidateD < smallestDistance) {
                     smallestDistance = candidateD;
                 }
@@ -124,10 +141,58 @@ class InkTineLines extends React.Component {
 
             let s = this.state.spacingValue;
             d = s / 2 - Math.abs((smallestDistance % s) - s / 2);
-        }
+        } 
+    */
         let pointPrimeX = point.x + (((alpha * lambda) / (d + lambda)) * M.x);
         let pointPrimeY = point.y + (((alpha * lambda) / (d + lambda)) * M.y);
         return (new Point(pointPrimeX, pointPrimeY));
+    }
+
+    drawSpacedLines() {
+        for (let i = 0; i < this.state.virtualSpacingLines.length; i++) {
+            this.state.virtualSpacingLines[i].remove();
+        }
+        this.state.virtualSpacingLines = [];
+
+        let L = new Point(this.state.currentLine.lastSegment.point).subtract(new Point(this.state.currentLine.firstSegment.point));
+        let clockwiseL = new Point(L.y, -L.x).normalize().multiply(this.state.spacingValue);
+        let counterClockwiseL = new Point(-L.y, L.x).normalize().multiply(this.state.spacingValue);
+
+        let firstNewSegment, lastNewSegment, newPath;
+        for (let i = 1; i < (Math.max(window.innerWidth, window.innerHeight) / this.state.spacingValue); i++) {
+            firstNewSegment = this.state.currentLine.firstSegment.point.add(clockwiseL.multiply(i));
+            lastNewSegment = this.state.currentLine.lastSegment.point.add(clockwiseL.multiply(i));
+           
+            newPath = new Path()
+            newPath.add(firstNewSegment);
+            newPath.add(lastNewSegment);
+            newPath.style = this.state.currentLine.style;
+            this.state.virtualSpacingLines.push(newPath);
+
+            firstNewSegment = this.state.currentLine.firstSegment.point.add(counterClockwiseL.multiply(i));
+            lastNewSegment = this.state.currentLine.lastSegment.point.add(counterClockwiseL.multiply(i));
+            
+            newPath = new Path();
+            newPath.add(firstNewSegment);
+            newPath.add(lastNewSegment);
+            newPath.style = this.state.currentLine.style;
+            this.state.virtualSpacingLines.push(newPath);
+        }
+        
+    }
+
+    onLineOptionsChange(param, value) 
+    {
+        //amplitude = Parameter 0
+        //phase = Parameter 1
+        switch (param) {
+            case 0:
+                this.setState({ alpha: value });
+                break;
+            case 1:
+                this.setState({ lambda: value });
+                break;
+          }
     }
 
     onChangeSpacingValue(value) {
@@ -141,7 +206,7 @@ class InkTineLines extends React.Component {
     onAllowingSpacing() 
     {
         this.setState({ disableSpacing: !this.state.disableSpacing}); 
-        if (this.state.disableSpacing == true)
+        if (this.state.disableSpacing == true && this.state.currentLine.segments.length != 0)
         {
             this.drawSpacedLines();
         }
@@ -151,61 +216,6 @@ class InkTineLines extends React.Component {
                 this.state.virtualSpacingLines[i].remove();
             }
         }
-    }
-
-    drawSpacedLines() {
-        for (let i = 0; i < this.state.virtualSpacingLines.length; i++) {
-            this.state.virtualSpacingLines[i].remove();
-        }
-        this.state.virtualSpacingLines = [];
-        let L = new Point(this.state.currentLine.lastSegment.point).subtract(new Point(this.state.currentLine.firstSegment.point));
-        let clockwiseL = new Point(L.y, -L.x).normalize().multiply(this.state.spacingValue);
-        let counterClockwiseL = new Point(-L.y, L.x).normalize().multiply(this.state.spacingValue);
-
-        for (let i = 0; i < (Math.max(window.innerWidth, window.innerHeight) / this.state.spacingValue); i++) {
-            let firstNewSegment, lastNewSegment, newPath;
-            if (i == 0) {
-                firstNewSegment = this.state.currentLine.firstSegment.point.add(clockwiseL);
-                lastNewSegment = this.state.currentLine.lastSegment.point.add(clockwiseL);
-            }
-            else {
-                firstNewSegment = this.state.virtualSpacingLines[this.state.virtualSpacingLines.length - 1].firstSegment.point.add(clockwiseL);
-                lastNewSegment = this.state.virtualSpacingLines[this.state.virtualSpacingLines.length - 1].lastSegment.point.add(clockwiseL);
-            }
-            newPath = new Path(
-                {
-                    strokeColor: '#40a9ff',
-                    strokeWidth: 5,
-                    strokeCap: 'round',
-                    dashArray: [4, 10],
-                });
-            newPath.add(firstNewSegment);
-            newPath.add(lastNewSegment);
-            this.state.virtualSpacingLines.push(newPath);
-        }
-
-        for (let i = 0; i < (Math.max(window.innerWidth, window.innerHeight) / this.state.spacingValue); i++) {
-            let firstNewSegment, lastNewSegment, newPath;
-            if (i == 0) {
-                firstNewSegment = this.state.currentLine.firstSegment.point.add(counterClockwiseL);
-                lastNewSegment = this.state.currentLine.lastSegment.point.add(counterClockwiseL);
-            }
-            else {
-                firstNewSegment = this.state.virtualSpacingLines[this.state.virtualSpacingLines.length - 1].firstSegment.point.add(counterClockwiseL);
-                lastNewSegment = this.state.virtualSpacingLines[this.state.virtualSpacingLines.length - 1].lastSegment.point.add(counterClockwiseL);
-            }
-            newPath = new Path(
-                {
-                    strokeColor: '#40a9ff',
-                    strokeWidth: 5,
-                    strokeCap: 'round',
-                    dashArray: [4, 10],
-                });
-            newPath.add(firstNewSegment);
-            newPath.add(lastNewSegment);
-            this.state.virtualSpacingLines.push(newPath);
-        }
-        console.log("Simulation run. Length of sim array:" + this.state.virtualSpacingLines.length);
     }
 
     render() {
@@ -219,8 +229,20 @@ class InkTineLines extends React.Component {
         }
 
         let spacedDrawerContent = <div>
-            <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced" onClick={() => {this.onAllowingSpacing() }} /><br /><br />
-            <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text><InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={80} onChange={this.onChangeSpacingValue.bind(this)} onPressEnter={this.onChangeSpacingValue.bind(this)} />
+         <Collapse defaultActiveKey={['0']} ghost>
+            <Panel header="Line Options">
+                <Text>Alpha:</Text>
+                    <InputNumber min={50} max={200} step={5} defaultValue={this.state.amplitude} onChange={this.onLineOptionsChange.bind(this, 0)}/>
+                <br></br>
+                <Text>Lambda:</Text><br></br>
+                    <InputNumber min={1} max={50} defaultValue={this.state.phase} onChange={this.onLineOptionsChange.bind(this, 1)}/>
+                <br></br>
+            </Panel>
+            <Panel header="Spacing Options">
+                <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced" onClick={() => {this.onAllowingSpacing() }} /><br /><br />
+                <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text><InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={this.state.spacingValue} onChange={this.onChangeSpacingValue.bind(this)} onPressEnter={this.onChangeSpacingValue.bind(this)} />
+            </Panel>
+        </Collapse>
         </div>;
         let spacedDrawer = <Popover title="Options" trigger="click" content={spacedDrawerContent}><Button>Options</Button></Popover>
 

@@ -1,21 +1,29 @@
 import React from 'react';
 import paper, { Path, Point } from 'paper'
-import { Button } from "antd";
-import { Typography } from 'antd';
+import { Button, Popover, InputNumber, Collapse, Switch, Typography } from "antd";
 import { create, all } from 'mathjs'
 
 const config = { }
 const math = create(all, config)
 
 const { Text } = Typography;
+const { Panel } = Collapse;
+
 class InkCircularTineLines extends React.Component {
     state = {
         currentLine: Path,
         currentCircle: Path.Circle,
+        //Line options
+        alpha: 0, 
+        lambda: 0,
+        //Arc Options
+        changeDirection: false,
     }
 
     constructor(props) {
         super(props);
+        this.state.alpha = this.props.alpha;
+        this.state.lambda = this.props.lambda;
     }
 
     componentDidMount() {
@@ -53,7 +61,15 @@ class InkCircularTineLines extends React.Component {
             let L = new Point(this.state.currentLine.lastSegment.point).subtract(new Point(this.state.currentLine.firstSegment.point));  
             this.state.currentCircle.radius = L.length
         }
-        this.state.currentCircle.style.dashOffset -= 1; //Adds a little animation to the dashes
+
+        if (this.state.changeDirection)
+        {
+            this.state.currentCircle.style.dashOffset += 1;
+        }
+        else
+        {
+            this.state.currentCircle.style.dashOffset -= 1;
+        }
     }
 
     circularTineLineDisplacement() {
@@ -86,8 +102,12 @@ class InkCircularTineLines extends React.Component {
         let PminusC = oldPoint.subtract(this.state.currentLine.firstSegment.point)
         let d = Math.abs(PminusC.length - this.state.currentCircle.radius)
 
-        let l = (this.props.alpha * this.props.lambda)/(d + this.props.lambda)
+        let l = (this.state.alpha * this.state.lambda)/(d + this.props.lambda)
         let theta = l/(PminusC.length);
+        if (this.state.changeDirection)
+        {
+            theta = -theta
+        }
 
         let circularMatrix = new math.matrix([[Math.cos(theta), Math.sin(theta)], [-Math.sin(theta), Math.cos(theta)]]);
         let PminusCMatrix = new math.matrix([PminusC.x, PminusC.y]);
@@ -96,6 +116,20 @@ class InkCircularTineLines extends React.Component {
         
         let newPoint = this.state.currentLine.firstSegment.point.add(partialNewPoint)
         return newPoint;
+    }
+
+    onLineOptionsChange(param, value) 
+    {
+        //amplitude = Parameter 0
+        //phase = Parameter 1
+        switch (param) {
+            case 0:
+                this.setState({ alpha: value });
+                break;
+            case 1:
+                this.setState({ lambda: value });
+                break;
+          }
     }
 
     render() {
@@ -108,8 +142,28 @@ class InkCircularTineLines extends React.Component {
             confirmButton = <div></div>
         }
 
+        let spacedDrawerContent = <div>
+        <Collapse defaultActiveKey={['0']} ghost>
+            <Panel header="Line Options">
+                <Text>Alpha:</Text>
+                    <InputNumber min={50} max={200} step={5} defaultValue={this.state.amplitude} onChange={this.onLineOptionsChange.bind(this, 0)}/>
+                <br></br>
+                <Text>Lambda:</Text><br></br>
+                    <InputNumber min={1} max={50} defaultValue={this.state.phase} onChange={this.onLineOptionsChange.bind(this, 1)}/>
+                <br></br>
+            </Panel>
+            <Panel header="Arc Options">
+                <Switch checkedChildren="Reverse Polarity" unCheckedChildren="Un-Reverse Polarity" 
+                onClick={() => {this.setState({changeDirection : !this.state.changeDirection})}} /><br /><br />
+            </Panel>
+       </Collapse>
+       </div>;
+       let spacedDrawer = <Popover title="Options" trigger="click" content={spacedDrawerContent}><Button>Options</Button></Popover>
+
         return (
             <div className="confirmButton">
+                {spacedDrawer}
+                <br></br><br></br>
                 {confirmButton}
             </div>
         );

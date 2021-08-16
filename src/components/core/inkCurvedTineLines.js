@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import paper, { Path, Point } from 'paper';
-import { Button, Popover, InputNumber, Collapse, Switch, Typography } from "antd";
+import { Button, Popover, InputNumber, Collapse, Typography } from "antd";
 
 const { Text } = Typography;
 const { Panel } = Collapse;
@@ -9,9 +9,10 @@ class InkCurvedTineLines extends React.Component {
     state = {
         currentLine: Path,
         virtualCurvedPath : Path,
-        amplitude: 50, //Parameter 0
-        phase: 0, //Parameter 1
-        wavelength: 0.1 //Parameter 2
+        //Curved line parameters
+        amplitude: 50, 
+        phase: 0, 
+        wavelength: 0.1, 
     }
 
     constructor(props) {
@@ -27,7 +28,7 @@ class InkCurvedTineLines extends React.Component {
     frameUpdate() {
         this.state.currentLine.visible = false;
         paper.view.onMouseDown = (event) => {
-            this.state.virtualCurvedPath.visible = false;
+            this.state.virtualCurvedPath.remove();
             this.state.currentLine = new Path(
                 {
                     strokeColor: '#40a9ff',
@@ -37,14 +38,24 @@ class InkCurvedTineLines extends React.Component {
                 });
             this.state.currentLine.add(event.point);
             this.setState({ currentLine: this.state.currentLine });
+            for (let i = 0; i < this.state.virtualCurvedSpacingLines.length; i++) {
+                this.state.virtualCurvedSpacingLines[i].remove();
+            }
         }
 
         paper.view.onMouseUp = (event) => {
             this.state.currentLine.add(event.point);
             this.setState({ currentLine: this.state.currentLine });
-            this.drawVirtualCurvedPath();
+            
+            let newVirtualCurvedPath = this.drawVirtualCurvedPath(this.state.currentLine);
+            this.setState({ virtualCurvedPath: newVirtualCurvedPath});
+
+            if (this.state.disableSpacing == false) {
+                this.drawSpacedLines();
+            }
         }
-        //this.state.currentLine.style.dashOffset -= 1; //Adds a little animation to the dashes
+        
+        //Adds a little animation to the dashes
         this.state.virtualCurvedPath.style.dashOffset -= 1;
     }
 
@@ -77,20 +88,24 @@ class InkCurvedTineLines extends React.Component {
         }
     }
 
-    drawVirtualCurvedPath() 
+    drawVirtualCurvedPath(straightLine, remove = true) 
     {
         let complexity = 100; //Needed to display the sine curve.
-
-        this.state.virtualCurvedPath.remove();
-        this.state.virtualCurvedPath = new Path();
-        for (let i = 0; i < complexity; i++) {
-            var offset = i / complexity * this.state.currentLine.length;
-            var point = this.state.currentLine.getPointAt(offset);
-            var normal = this.state.currentLine.getNormalAt(offset);
-            normal = normal.multiply(this.displacementFormula(offset));
-            this.state.virtualCurvedPath.add(point.add(normal));
+        if (remove)
+        {
+            this.state.virtualCurvedPath.remove();
         }
-        this.state.virtualCurvedPath.style = this.state.currentLine.style;
+
+        let virtualCurvedPath = new Path();
+        for (let i = 0; i < complexity; i++) {
+            var offset = i / complexity * straightLine.length;
+            var point = straightLine.getPointAt(offset);
+            var normal = straightLine.getNormalAt(offset);
+            normal = normal.multiply(this.displacementFormula(offset));
+            virtualCurvedPath.add(point.add(normal));
+        }
+        virtualCurvedPath.style = straightLine.style;
+        return virtualCurvedPath;
     }
 
     onOptionsChange(param, value) 
@@ -109,18 +124,14 @@ class InkCurvedTineLines extends React.Component {
                 this.setState({ wavelength: value });
                 break;
           }
-        this.drawVirtualCurvedPath();
-    }
-
-    onConfirm() 
-    {
-        this.curvedTineLineDisplacement();
+        let newVirtualCurvedPath = this.drawVirtualCurvedPath(this.state.currentLine, true);
+        this.setState({ virtualCurvedPath: newVirtualCurvedPath});
     }
 
     render() {
         let confirmButton;
         if (this.state.virtualCurvedPath.visible == true) {
-            confirmButton = <Button type="primary" onClick={() => this.onConfirm()}
+            confirmButton = <Button type="primary" onClick={() => this.curvedTineLineDisplacement()}
             >Confirm Line</Button>
         }
         else {
@@ -128,7 +139,7 @@ class InkCurvedTineLines extends React.Component {
         }
         
         let optionsDrawerContent = <div>
-        <Collapse defaultActiveKey={['1']} ghost>
+        <Collapse defaultActiveKey={['0']} ghost>
             <Panel header="Curved Line Options">
                 <Text>Amplitude:</Text>
                     <InputNumber min={20} max={200} step={5} defaultValue={this.state.amplitude} onChange={this.onOptionsChange.bind(this, 0)}/>
@@ -138,12 +149,6 @@ class InkCurvedTineLines extends React.Component {
                 <br></br>
                 <Text>Wavelength:</Text>
                     <InputNumber min={0.01} max={1} step={0.01} defaultValue={this.state.wavelength} onChange={this.onOptionsChange.bind(this, 2)}/>
-                </Panel>
-            <Panel header="Spacing Options">
-                <Switch checkedChildren="Spaced" unCheckedChildren="Not Spaced"/> 
-                <br/><br />
-                <Text disabled={this.state.disableSpacing}>Spacing Between Lines:</Text>
-                    <InputNumber disabled={this.state.disableSpacing} min={50} max={200} defaultValue={80}/>
             </Panel>
         </Collapse>
         </div>;
