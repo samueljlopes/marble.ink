@@ -10,8 +10,6 @@ class InkCanvas extends React.Component {
   componentDidMount() {
     paper.setup(this.canvas);
     var resizeHandler = function(event) {
-      //console.log("resized function called:" +
-      //            window.innerWidth + " " + window.innerHeight)
       paper.view.viewSize = new Size(window.innerWidth, window.innerHeight);
     };
     resizeHandler();
@@ -38,8 +36,8 @@ class InkCanvas extends React.Component {
   render() 
   {
     return (
-      <div>
-        <canvas id="paperCanvas" ref={ ref => { this.canvas=ref; } } resize="true"></canvas>
+      <div id="canvasContainer">
+        <canvas id="canvas" ref={ ref => { this.canvas=ref; } } resize="true"></canvas>
       </div>
     ); 
   }

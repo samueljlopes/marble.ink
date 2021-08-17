@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import 'antd/dist/antd.css';
 import './App.css';
-import InkWindow from './components/inkWindow.js'
-import { Layout  } from 'antd';
-const { Header } = Layout;
 
+import HeaderNavigation from './components/layout/headerNavigation.js'
+import InkWindow from './components/inkWindow.js'
 class App extends Component {
   render() {
     return (
       <div>
-          <Header></Header>
+          <HeaderNavigation></HeaderNavigation>
           <InkWindow></InkWindow>
       </div>
     );
