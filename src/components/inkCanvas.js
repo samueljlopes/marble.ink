@@ -1,5 +1,6 @@
-import paper, { Point, Path} from 'paper';
+import paper, { Point, Path, Size} from 'paper';
 import React from 'react';
+import './styles/inkCanvas.css'
 
 class InkCanvas extends React.Component {
   constructor(props) {
@@ -7,29 +8,40 @@ class InkCanvas extends React.Component {
   }
 
   componentDidMount() {
-    this.setupCanvas();
-    let path = new Path(); //This is to test the size of the canvas 
-    path.strokeColor = 'black';
+    paper.setup(this.canvas);
+    var resizeHandler = function(event) {
+      //console.log("resized function called:" +
+      //            window.innerWidth + " " + window.innerHeight)
+      paper.view.viewSize = new Size(window.innerWidth, window.innerHeight);
+    };
+    resizeHandler();
+    paper.view.on('resize', resizeHandler);
+    Path.prototype.hasBeenTined = false;
+  }
+
+ /*  
+ findEdges() 
+  {
+    this.state.canvasEdge.remove();
+
+    let path = new Path();
+    path.strokeColor = 'blue';
     path.add(new Point(0, 0),
       new Point(2 * paper.view.center.x, 0),
       new Point(2 * paper.view.center.x, 2 * paper.view.center.y),
       new Point(0, 2 * paper.view.center.y),
       new Point(0, 0));
-    Path.prototype.hasBeenTined = false;
+    this.setState({canvasEdge : path})
   }
+ */
 
-  setupCanvas() {
-    paper.setup('canvas');
-  }
-
-  render() //recalled every time setState is called elsewhere in the code
+  render() 
   {
     return (
       <div>
-        <canvas id="canvas" width={window.innerWidth} height={window.innerHeight}></canvas>
+        <canvas id="paperCanvas" ref={ ref => { this.canvas=ref; } } resize="true"></canvas>
       </div>
-    ); //canvas is returned to the main program
+    ); 
   }
 }
-
 export default InkCanvas

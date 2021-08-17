@@ -183,8 +183,8 @@ class InkTineLines extends React.Component {
 
     onLineOptionsChange(param, value) 
     {
-        //amplitude = Parameter 0
-        //phase = Parameter 1
+        //alpha = Parameter 0
+        //lambda = Parameter 1
         switch (param) {
             case 0:
                 this.setState({ alpha: value });

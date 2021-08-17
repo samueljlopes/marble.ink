@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import './App.css';
 import InkWindow from './components/inkWindow.js'
 import { Layout  } from 'antd';
-const { Header, Content, Footer } = Layout;
+const { Header } = Layout;
 
 class App extends Component {
   render() {
