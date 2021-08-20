@@ -5,5 +5,5 @@
 
 .marbleTitle {
     font-family: Bitter;
-    color: white;
+    color: white !important;
 }
