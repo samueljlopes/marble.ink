@@ -1,10 +1,9 @@
 @font-face {
-  font-family: Bitter;
-  src: url(../../../assets/Bitter/Bitter-VariableFont_wght.ttf);
+    font-family: Bitter;
+    src: url(../../../assets/Bitter/Bitter-VariableFont_wght.ttf);
 }
-@text-color :  #FFFFFF// major text color
 
 .marbleTitle {
-  font-family: Bitter;
+    font-family: Bitter;
+    color: white;
 }
-/*# sourceMappingURL=headerNavigation.css.map */
