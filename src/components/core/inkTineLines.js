@@ -2,7 +2,7 @@ import React from 'react';
 import paper, { Path, Point } from 'paper'
 import { Button, Popover, Switch, InputNumber, Collapse } from "antd";
 import { Typography, Space } from 'antd';
-import './styles/inkTineLines.less'
+import './styles/inkTineLines.css'
 
 const { Text } = Typography;
 const { Panel } = Collapse;

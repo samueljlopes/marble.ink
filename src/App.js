@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.less';
+import './App.css';
 
 import HeaderNavigation from './components/layout/headerNavigation.js'
 import InkWindow from './components/inkWindow.js'
