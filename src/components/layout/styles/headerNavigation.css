@@ -3,7 +3,20 @@
     src: url(../../../assets/Bitter/Bitter-VariableFont_wght.ttf);
 }
 
-.marbleTitle {
+.headerTitle {
+    float: left;
+    width: 15em;
+    height: 4em;
+    margin: 8px 24px 0px 0;
+}
+
+.marbleFont 
+{
     font-family: Bitter;
-    color: white !important;
+    color: #ffffff !important;
+}
+
+.headerMenu
+{
+    float: right;
 }
