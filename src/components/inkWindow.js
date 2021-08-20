@@ -5,8 +5,8 @@ import InkCanvas from './inkCanvas.js'
 import InkTool from './inkTool.js'
 import { Radio, Button} from "antd";
 
-import './layout/node_modules/antd/dist/antd.css';
-import './styles/inkWindow.css';
+import '../../node_modules/antd/dist/antd.css';
+import './styles/inkWindow.less';
 
 class InkWindow extends Component {
   state = {

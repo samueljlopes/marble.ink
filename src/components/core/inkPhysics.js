@@ -1,6 +1,6 @@
 import paper, { Point, Path } from 'paper'
 import React from 'react';
-import './styles/inkPhysics.css'
+import './styles/inkPhysics.less'
 import { CompactPicker } from 'react-color';
 
 class InkPhysics extends React.Component {

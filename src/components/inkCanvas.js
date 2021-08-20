@@ -1,6 +1,6 @@
 import paper, { Point, Path, Size} from 'paper';
 import React from 'react';
-import './styles/inkCanvas.css'
+import './styles/inkCanvas.less'
 
 class InkCanvas extends React.Component {
   constructor(props) {
