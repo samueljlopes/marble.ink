@@ -34,15 +34,14 @@ class InkWindow extends Component {
         <div className="mainCanvas">
           <InkCanvas></InkCanvas>
           <div className="optionsDrawer">
-            <OptionsDrawer value={this.state.optionsDrawerValue} onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
+            <OptionsDrawer value={this.state.optionsDrawerValue} 
+            onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
             <br></br><br></br>
-            <Button disabled>Undo</Button> 
-            <Button disabled>Redo</Button>
+            <Button disabled>Undo</Button><Button disabled>Redo</Button>
           </div>
-          <div>
-            <InkTool type={this.state.optionsDrawerValue} allItems={this.state.allItems}
-            addItemToAllItems={this.addItemToAllItems.bind(this)}></InkTool>
-           </div>
+
+          <InkTool type={this.state.optionsDrawerValue} allItems={this.state.allItems}
+          addItemToAllItems={this.addItemToAllItems.bind(this)}></InkTool>
       </div>
     );
   }
