@@ -64,7 +64,6 @@ class InkWindow extends Component {
 
         <InkTool type={this.state.optionsDrawerValue}
           allItems={this.state.allItems}
-          allItemsHistory={this.state.allItemsHistory}
           addItemToAllItems={this.addItemToAllItems.bind(this)}
           addToHistory={this.addToHistory.bind(this)}></InkTool>
       </div>

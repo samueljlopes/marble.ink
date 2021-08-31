@@ -14,8 +14,6 @@ class InkPhysics extends React.Component {
     componentDidMount() {
         this.frameUpdateInterval = setInterval(() =>
             this.frameUpdate(), 10);
-        this.blotPhysicsInterval = setInterval(() =>
-            this.blotPhysics(), 10);
     }
 
     handleChangeComplete = (color) => {
@@ -38,12 +36,28 @@ class InkPhysics extends React.Component {
 
                 this.setState({ isMouseDown: true });
                 this.props.addItemToAllItems(circle);
+
+                this.blotPhysicsInterval = setInterval(() => this.blotPhysics(), 10);
             }
 
             paper.view.onMouseUp = (event) => {
                 this.setState({ isMouseDown: false });
-                //Right now, transformations continue to subsist in this local component
-                //For ease of undo/redo functionality, perhaps suspend the blot physics sim, save to all items, then begin again?
+                clearInterval(this.blotPhysicsInterval);
+                if (this.state.allTransformations.length > 0) {
+                    for (let i = 0; i < this.state.allTransformations.length; i++)
+                    {
+                        this.props.allItems.children[i] = this.state.allTransformations[i];
+                        this.state.allTransformations[i].remove();
+                    }
+                    
+                    //Super hacky, but makes program not re-alter transformations (otherwise it was treating them
+                    //as very misshapen circular ink blots!)
+                    for (let i = 0; i < this.props.allItems.children.length; i++) {
+                        this.props.allItems.children[i].hasBeenTined = true;
+                    }
+                }
+                this.state.allTransformations = [];
+                this.props.addToHistory();
             }
 
             if (this.state.isMouseDown && this.props.allItems.children.length > 0) {
@@ -78,7 +92,7 @@ class InkPhysics extends React.Component {
                                 transformation = this.radialDisplacement(this.state.allTransformations[j], center, radius); //Uses existing transformation
                                 this.state.allTransformations[j].remove(); //Removes previous from canvas
                             }
-                            transformation.fillColor = 'red';
+                            transformation.fillColor = this.props.allItems.children[j].fillColor;
                             this.state.allTransformations[j] = (transformation); //Places all blots' transformation into a array
                         }
                     }
