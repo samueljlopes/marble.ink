@@ -31,16 +31,16 @@ class InkTool extends React.Component {
       }
     };
     
-    tween.then(function() 
+    let addToHistory = this.props.addToHistory;
+    tween.then(function()
     {
       endObject.remove();
+      addToHistory();
     })
   }
 
   render() {
     const SelectedTool = ToolComponents[components[this.props.type]];
-    console.log(this.props.allItems)
-
     let specificProps = {}
     if (this.props.type == 0) //Special case for when user originally adds ink blots
     {

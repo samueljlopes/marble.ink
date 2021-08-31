@@ -12,6 +12,7 @@ class InkWindow extends Component {
   state = {
     optionsDrawerValue: 0,
     allItems: paper.Group,
+    allItemsHistory: []
   }
 
   componentDidMount() {
@@ -29,6 +30,23 @@ class InkWindow extends Component {
     this.setState({ allItems: currentAllItems });
   }
 
+  addToHistory = () => {
+    let currentAllItemsHistory = this.state.allItemsHistory;
+    currentAllItemsHistory.push(this.state.allItems.exportJSON());
+    this.setState({ allItemsHistory: currentAllItemsHistory });
+    console.log(currentAllItemsHistory.length)
+  }
+
+  onUndo = () => 
+  {
+    let previousState = this.state.allItemsHistory.pop();
+    paper.project.activeLayer.remove();
+    paper.project.activeLayer.importJSON(previousState);
+
+    this.state.allItems.remove();
+    this.state.allItems.importJSON(previousState)
+  }
+
   render() {
     return (
         <div className="mainCanvas">
@@ -37,11 +55,14 @@ class InkWindow extends Component {
             <OptionsDrawer value={this.state.optionsDrawerValue} 
             onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
             <br></br><br></br>
-            <Button disabled>Undo</Button><Button disabled>Redo</Button>
+            <Button disabled={false} onClick={this.onUndo}>Undo</Button><Button disabled>Redo</Button>
           </div>
 
-          <InkTool type={this.state.optionsDrawerValue} allItems={this.state.allItems}
-          addItemToAllItems={this.addItemToAllItems.bind(this)}></InkTool>
+          <InkTool type={this.state.optionsDrawerValue} 
+          allItems={this.state.allItems}
+          allItemsHistory={this.state.allItemsHistory} 
+          addItemToAllItems={this.addItemToAllItems.bind(this)}
+          addToHistory={this.addToHistory.bind(this)}></InkTool>
       </div>
     );
   }

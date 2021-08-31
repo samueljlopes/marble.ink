@@ -15,10 +15,6 @@ class InkCurvedTineLines extends React.Component {
         wavelength: 0.1, 
     }
 
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         this.state.currentLine = new Path();
         this.state.virtualCurvedPath = new Path();
