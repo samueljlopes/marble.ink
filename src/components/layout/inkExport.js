@@ -3,6 +3,7 @@ import React from 'react'
 
 import { Modal, Button } from 'antd';
 import './styles/inkExport.css'
+import { DownloadOutlined } from '@ant-design/icons';
 
 class InkExport extends React.Component {
     state = {
@@ -24,12 +25,29 @@ class InkExport extends React.Component {
         this.setState({currentCanvasImageURL: dataString})
     }
 
+    downloadImage() 
+    {
+        var element = document.createElement("a");
+        element.href = this.state.currentCanvasImageURL;
+        element.download = "image.jpg";
+        element.click();
+    }
+
     render() {
+        const blotNumber = paper.project.activeLayer.children.length; //Potential edge case with tool lines
         return (
             <div>
                 <Modal title="Export Your Artwork" visible={true} 
-                onOk={this.handleOk} onCancel={this.props.onCancel}>
-                    <img src={this.state.currentCanvasImageURL} id='canvasImage'/>
+                onCancel={this.props.onCancel}
+                footer={[
+                    <Button type="primary" icon={<DownloadOutlined />} onClick={this.downloadImage.bind(this)}>
+                        Download Canvas
+                    </Button>
+                ]}
+                >
+                    {blotNumber >= 1 &&
+                        <img src={this.state.currentCanvasImageURL} id='canvasImage'/>
+                    }
                     <p>You can share your creation on a number of social media platforms, including Instagram.</p>
                 </Modal>
             </div>
