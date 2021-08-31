@@ -43,8 +43,8 @@ class InkWindow extends Component {
     paper.project.activeLayer.remove();
     paper.project.activeLayer.importJSON(previousState);
 
-    this.state.allItems.remove();
-    this.state.allItems.importJSON(previousState)
+    let newAllItems = paper.project.activeLayer.children[0];
+    this.setState({ allItems: newAllItems})
   }
 
   render() {
