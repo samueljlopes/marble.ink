@@ -3,7 +3,7 @@ import paper from 'paper';
 
 import InkCanvas from './inkCanvas.js'
 import InkTool from './inkTool.js'
-import { Radio, Button} from "antd";
+import { Radio, Button } from "antd";
 
 import '../../node_modules/antd/dist/antd.css';
 import './styles/inkWindow.css';
@@ -13,6 +13,7 @@ class InkWindow extends Component {
     optionsDrawerValue: 0,
     allItems: paper.Group,
     allItemsHistory: []
+    
   }
 
   componentDidMount() {
@@ -37,30 +38,33 @@ class InkWindow extends Component {
     console.log(currentAllItemsHistory.length)
   }
 
-  onUndo = () => 
-  {
-    let previousState = this.state.allItemsHistory.pop();
-    paper.project.activeLayer.remove();
-    paper.project.activeLayer.importJSON(previousState);
+  onUndo = () => {
+    if (this.state.allItemsHistory.length >= 1) {
+      let previousState = this.state.allItemsHistory.pop();
+      paper.project.activeLayer.remove();
+      paper.project.activeLayer.importJSON(previousState);
 
-    let newAllItems = paper.project.activeLayer.children[0];
-    this.setState({ allItems: newAllItems})
+      let newAllItems = paper.project.activeLayer.children[0];
+      //The only thing that should be restored is a single group, so just grab the first element in the enclosing array
+      this.setState({ allItems: newAllItems })
+    }
   }
 
   render() {
+    const historyLength = this.state.allItemsHistory.length
     return (
-        <div className="mainCanvas">
-          <InkCanvas></InkCanvas>
-          <div className="optionsDrawer">
-            <OptionsDrawer value={this.state.optionsDrawerValue} 
+      <div className="mainCanvas">
+        <InkCanvas></InkCanvas>
+        <div className="options">
+          <OptionsDrawer value={this.state.optionsDrawerValue}
             onChange={this.onChangeOptionsDrawerValue}></OptionsDrawer>
-            <br></br><br></br>
-            <Button disabled={false} onClick={this.onUndo}>Undo</Button><Button disabled>Redo</Button>
-          </div>
+          <br></br>
+          <Button disabled={historyLength === 0 || historyLength === undefined} className='optionsUndo' onClick={this.onUndo}>Undo</Button>
+        </div>
 
-          <InkTool type={this.state.optionsDrawerValue} 
+        <InkTool type={this.state.optionsDrawerValue}
           allItems={this.state.allItems}
-          allItemsHistory={this.state.allItemsHistory} 
+          allItemsHistory={this.state.allItemsHistory}
           addItemToAllItems={this.addItemToAllItems.bind(this)}
           addToHistory={this.addToHistory.bind(this)}></InkTool>
       </div>
