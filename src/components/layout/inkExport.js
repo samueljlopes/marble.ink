@@ -8,7 +8,8 @@ import { DownloadOutlined } from '@ant-design/icons';
 class InkExport extends React.Component {
     state = {
         currentCanvasImage: paper.Raster,
-        currentCanvasImageURL : ""
+        currentCanvasImageURL : "",
+        numberOfBlots: 0
     }
 
     componentDidMount() 
@@ -18,7 +19,21 @@ class InkExport extends React.Component {
 
     rasteriseActiveLayer() 
     {
+        for (let i = 0; i < paper.project.activeLayer.children.length; i++)
+        {
+            if (paper.project.activeLayer.children[i].isTool == true)
+            {
+                paper.project.activeLayer.children[i].visible = false;
+            }
+        }
         var tempImg = paper.project.activeLayer.rasterize();
+        for (let i = 0; i < paper.project.activeLayer.children.length; i++)
+        {
+            if (paper.project.activeLayer.children[i].isTool == true)
+            {
+                paper.project.activeLayer.children[i].visible = true;
+            }
+        }
         var dataString = tempImg.toDataURL();
 
         this.setState({currentCanvasImage: tempImg})

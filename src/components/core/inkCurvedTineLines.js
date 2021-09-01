@@ -23,8 +23,11 @@ class InkCurvedTineLines extends React.Component {
 
     frameUpdate() {
         this.state.currentLine.visible = false;
+
         paper.view.onMouseDown = (event) => {
+            this.state.virtualCurvedPath.isTool = false;
             this.state.virtualCurvedPath.remove();
+
             this.state.currentLine = new Path(
                 {
                     strokeColor: '#40a9ff',
@@ -34,9 +37,6 @@ class InkCurvedTineLines extends React.Component {
                 });
             this.state.currentLine.add(event.point);
             this.setState({ currentLine: this.state.currentLine });
-            for (let i = 0; i < this.state.virtualCurvedSpacingLines.length; i++) {
-                this.state.virtualCurvedSpacingLines[i].remove();
-            }
         }
 
         paper.view.onMouseUp = (event) => {
@@ -44,11 +44,8 @@ class InkCurvedTineLines extends React.Component {
             this.setState({ currentLine: this.state.currentLine });
             
             let newVirtualCurvedPath = this.drawVirtualCurvedPath(this.state.currentLine);
+            newVirtualCurvedPath.isTool = true;
             this.setState({ virtualCurvedPath: newVirtualCurvedPath});
-
-            if (this.state.disableSpacing == false) {
-                this.drawSpacedLines();
-            }
         }
         
         //Adds a little animation to the dashes
@@ -163,13 +160,13 @@ class InkCurvedTineLines extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.frameUpdateInterval);
-        this.state.currentLine.visible = false;
+        this.state.currentLine.remove();
         paper.view.off('mousedown'); //Removes mouse listeners whilst preserving view and project.
         paper.view.off('mouseup');
         for (let i = 0; i < this.props.allItems.children.length; i++) {
             this.props.allItems.children[i].hasBeenTined = true;
         }
-        this.state.virtualCurvedPath.visible = false;
+        this.state.virtualCurvedPath.remove();
     }
 }
 export default InkCurvedTineLines;

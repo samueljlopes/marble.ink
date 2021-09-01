@@ -31,8 +31,9 @@ class InkTineLines extends React.Component {
     }
 
     frameUpdate() {
+        this.state.currentLine.isTool = true;
         paper.view.onMouseDown = (event) => {
-            this.state.currentLine.visible = false;
+            this.state.currentLine.remove();
             this.state.currentLine = new Path(
                 {
                     strokeColor: '#40a9ff',
@@ -164,6 +165,7 @@ class InkTineLines extends React.Component {
             lastNewSegment = this.state.currentLine.lastSegment.point.add(clockwiseL.multiply(i));
            
             newPath = new Path()
+            newPath.isTool = true;
             newPath.add(firstNewSegment);
             newPath.add(lastNewSegment);
             newPath.style = this.state.currentLine.style;
@@ -173,6 +175,7 @@ class InkTineLines extends React.Component {
             lastNewSegment = this.state.currentLine.lastSegment.point.add(counterClockwiseL.multiply(i));
             
             newPath = new Path();
+            newPath.isTool = true;
             newPath.add(firstNewSegment);
             newPath.add(lastNewSegment);
             newPath.style = this.state.currentLine.style;
@@ -257,7 +260,7 @@ class InkTineLines extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.frameUpdateInterval);
-        this.state.currentLine.visible = false;
+        this.state.currentLine.remove();
         paper.view.off('mousedown'); //Removes mouse listeners whilst preserving view and project.
         paper.view.off('mouseup');
         for (let i = 0; i < this.props.allItems.children.length; i++) {

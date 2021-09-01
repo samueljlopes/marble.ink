@@ -34,6 +34,9 @@ class InkCircularTineLines extends React.Component {
     }
 
     frameUpdate() {
+        this.state.currentLine.visible = false;
+        this.state.currentCircle.isTool = true;
+
         paper.view.onMouseDown = (event) => {
             this.state.currentLine = new Path();
             this.state.currentLine.add(event.point);
@@ -171,8 +174,8 @@ class InkCircularTineLines extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.frameUpdateInterval);
-        this.state.currentLine.visible = false;
-        this.state.currentCircle.visible = false;
+        this.state.currentLine.remove();
+        this.state.currentCircle.remove();
         paper.view.off('mousedown'); //Removes mouse listeners whilst preserving view and project.
         paper.view.off('mouseup');
         paper.view.off('mousedrag');

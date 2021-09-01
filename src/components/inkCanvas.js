@@ -14,7 +14,9 @@ class InkCanvas extends React.Component {
     };
     resizeHandler();
     paper.view.on('resize', resizeHandler);
+    //Parameters added to Path prototype
     Path.prototype.hasBeenTined = false;
+    Path.prototype.isTool = false;
   }
 
  /*  
