@@ -137,7 +137,7 @@ class InkCircularTineLines extends React.Component {
 
     render() {
         let confirmButton;
-        if (this.state.currentLine.visible == true) {
+        if (this.state.currentLine.visible == false) {
             confirmButton = <Button type="primary" onClick={() => this.circularTineLineDisplacement()}
             >Confirm Line</Button>
         }

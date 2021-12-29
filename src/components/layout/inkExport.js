@@ -74,4 +74,5 @@ class InkExport extends React.Component {
         this.state.currentCanvasImage.remove();
     }
 }
+
 export default InkExport
